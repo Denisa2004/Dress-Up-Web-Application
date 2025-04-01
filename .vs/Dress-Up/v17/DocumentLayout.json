@@ -1,16 +1,49 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\irina\\Documents\\facultate\\ALGORITMI AVANSATI\\Dress-Up\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\Migrations\\20250401085710_ConfigurationDone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Dress-Up\\Data\\Migrations\\20250401085710_ConfigurationDone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\areas\\identity\\pages\\account\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\areas\\identity\\pages\\account\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\Migrations\\20250401082902_UsersAndRoles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Dress-Up\\Data\\Migrations\\20250401082902_UsersAndRoles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\models\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\models\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
-      "Orientation": 0,
+      "Orientation": 1,
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
+          "DockedHeight": 225,
           "SelectedChildIndex": -1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
@@ -18,6 +51,131 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 84,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{a80febb4-e7e0-4147-b476-21aaf2453969}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 10,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20250401085710_ConfigurationDone.cs",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\Migrations\\20250401085710_ConfigurationDone.cs",
+              "RelativeDocumentMoniker": "Dress-Up\\Data\\Migrations\\20250401085710_ConfigurationDone.cs",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\Migrations\\20250401085710_ConfigurationDone.cs",
+              "RelativeToolTip": "Dress-Up\\Data\\Migrations\\20250401085710_ConfigurationDone.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T08:57:10.854Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Register.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "RelativeDocumentMoniker": "Dress-Up\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "RelativeToolTip": "Dress-Up\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAYwH0AAACGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T08:50:40.634Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "20250401082902_UsersAndRoles.cs",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\Migrations\\20250401082902_UsersAndRoles.cs",
+              "RelativeDocumentMoniker": "Dress-Up\\Data\\Migrations\\20250401082902_UsersAndRoles.cs",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\Migrations\\20250401082902_UsersAndRoles.cs",
+              "RelativeToolTip": "Dress-Up\\Data\\Migrations\\20250401082902_UsersAndRoles.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T08:29:02.925Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_LoginPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeDocumentMoniker": "Dress-Up\\Views\\Shared\\_LoginPartial.cshtml",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeToolTip": "Dress-Up\\Views\\Shared\\_LoginPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAB+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-01T08:26:45.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SeedData.cs",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Models\\SeedData.cs",
+              "RelativeDocumentMoniker": "Dress-Up\\Models\\SeedData.cs",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Models\\SeedData.cs",
+              "RelativeToolTip": "Dress-Up\\Models\\SeedData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T08:17:57.96Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Dress-Up\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Dress-Up\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T08:11:41.744Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Program.cs",
+              "RelativeDocumentMoniker": "Dress-Up\\Program.cs",
+              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Program.cs",
+              "RelativeToolTip": "Dress-Up\\Program.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T08:10:19.356Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 10,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             }
           ]
         }

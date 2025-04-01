@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\irina\\Documents\\facultate\\ALGORITMI AVANSATI\\Dress-Up\\Dress-Up\\Dress-Up.csproj": {}
+    "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Dress-Up.csproj": {}
   },
   "projects": {
-    "C:\\Users\\irina\\Documents\\facultate\\ALGORITMI AVANSATI\\Dress-Up\\Dress-Up\\Dress-Up.csproj": {
+    "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Dress-Up.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\irina\\Documents\\facultate\\ALGORITMI AVANSATI\\Dress-Up\\Dress-Up\\Dress-Up.csproj",
+        "projectUniqueName": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Dress-Up.csproj",
         "projectName": "Dress-Up",
-        "projectPath": "C:\\Users\\irina\\Documents\\facultate\\ALGORITMI AVANSATI\\Dress-Up\\Dress-Up\\Dress-Up.csproj",
-        "packagesPath": "C:\\Users\\irina\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\irina\\Documents\\facultate\\ALGORITMI AVANSATI\\Dress-Up\\Dress-Up\\obj\\",
+        "projectPath": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Dress-Up.csproj",
+        "packagesPath": "C:\\Users\\Roberta Nechita\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\irina\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Roberta Nechita\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -42,9 +43,8 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+          "auditMode": "direct"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -66,9 +66,17 @@
               "target": "Package",
               "version": "[8.0.11, )"
             },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
               "version": "[8.0.11, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.7, )"
             }
           },
           "imports": [
@@ -90,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
