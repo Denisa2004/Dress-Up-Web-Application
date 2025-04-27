@@ -3,18 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\controllers\\avatarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\controllers\\avatarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\views\\avatar\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\views\\avatar\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\models\\avatarimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\models\\avatarimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|c:\\users\\roberta nechita\\desktop\\fmi 2\\sem 2\\mds\\dress-up\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2F7F2A15-BA2E-4197-8959-B4B0FD01DA12}|Dress-Up\\Dress-Up.csproj|solutionrelative:dress-up\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -43,8 +31,8 @@
           ]
         },
         {
-          "DockedHeight": 21,
-          "SelectedChildIndex": 5,
+          "DockedHeight": 16,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -56,7 +44,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Program.cs",
               "RelativeDocumentMoniker": "Dress-Up\\Program.cs",
@@ -64,51 +52,13 @@
               "RelativeToolTip": "Dress-Up\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-25T14:30:20.319Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AvatarImage.cs",
-              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Models\\AvatarImage.cs",
-              "RelativeDocumentMoniker": "Dress-Up\\Models\\AvatarImage.cs",
-              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Models\\AvatarImage.cs",
-              "RelativeToolTip": "Dress-Up\\Models\\AvatarImage.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-25T14:17:01.826Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Views\\Avatar\\Index.cshtml",
-              "RelativeDocumentMoniker": "Dress-Up\\Views\\Avatar\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Views\\Avatar\\Index.cshtml",
-              "RelativeToolTip": "Dress-Up\\Views\\Avatar\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-25T14:16:20.225Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AvatarController.cs",
-              "DocumentMoniker": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Controllers\\AvatarController.cs",
-              "RelativeDocumentMoniker": "Dress-Up\\Controllers\\AvatarController.cs",
-              "ToolTip": "C:\\Users\\Roberta Nechita\\Desktop\\FMI 2\\SEM 2\\MDS\\Dress-Up\\Controllers\\AvatarController.cs",
-              "RelativeToolTip": "Dress-Up\\Controllers\\AvatarController.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwAIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-25T14:14:46.907Z",
+              "WhenOpened": "2025-04-25T14:30:20.319Z",
               "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedHeight": 13,
+          "DockedHeight": 18,
           "SelectedChildIndex": -1,
           "Children": [
             {
