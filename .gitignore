@@ -8,6 +8,10 @@ bin/
 obj/
 out/
 
+**/obj/
+**/bin/
+
+
 *.cmake
 *.ncb
 *.sdf
