@@ -12,8 +12,6 @@ namespace Dress_Up.Models
         public int OutfitId { get; set; }
         [ForeignKey("OutfitId")]
         public virtual Outfit Outfit { get; set; }
-
-
         public DateTime Date_Voted { get; set; } = DateTime.Now;
     }
 }

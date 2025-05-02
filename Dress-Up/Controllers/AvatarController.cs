@@ -40,7 +40,7 @@ namespace Dress_Up.Controllers
             //outfit.Id = ? 
             outfit.Image = filePath;
             outfit.Name = fileName; //numele va putea fi editat ulterior
-            outfit.UserId = User.Identity.Name; //aici ar trebui sa fie id ul user ului
+            //outfit.UserId = User.Identity.Name; //aici ar trebui sa fie id ul user ului
             outfit.Date_added = DateTime.Now;
             outfit.IsPublic = false;
             outfit.Description = "Avatar personalizat"; //descrierea o sa poata fi editata ulterior
