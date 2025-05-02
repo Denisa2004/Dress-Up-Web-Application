@@ -1,0 +1,26 @@
+﻿@model User
+
+@{
+    ViewData["Title"] = "Profilul Meu";
+}
+
+<h2>@Model.UserName</h2>
+<h3>Outfit-uri salvate</h3>
+
+@if (ViewBag.UserOutfits != null)
+{
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        @foreach (var outfit in ViewBag.UserOutfits)
+        {
+            <div style="text-align: center;">
+                <img src="@outfit.Image" alt="@outfit.Name" width="200" style="border-radius: 12px;" />
+                <p>@outfit.Name</p>
+                <p><small>@outfit.Date_added.ToShortDateString()</small></p>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Nu ai salvat niciun outfit încă.</p>
+}

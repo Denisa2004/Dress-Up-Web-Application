@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Evenimente Active";
+    var evenimente = ViewBag.Events as List<Event>;
+    bool esteAdmin = ViewBag.EsteAdmin ?? false;
+}
+
+@if (evenimente == null || !evenimente.Any())
+{
+    <div class="alert alert-warning text-center">
+        Nu exista evenimente active.
+    </div>
+    <a 
+}
+else
+{
+    <div class="row">
+        @foreach (var ev in evenimente)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@Url.Content("~/images/events/" + ev.Image)" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h4 class="card-title">@ev.Name</h4>
+                        <p class="card-text">@ev.Description</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Participate", "Event", new { eventId = ev.Id })" class="btn btn-success">Participa</a>
+
+                        @if (esteAdmin)
+                        {
+                            <form asp-action="Stop" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2">
+                                <button type="submit" class="btn btn-danger">Oprește Concurs</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

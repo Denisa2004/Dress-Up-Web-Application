@@ -1,0 +1,49 @@
+﻿@model Dress_Up.Models.Event
+
+<h2 class="text-center mt-5">Adaugare Comcurs</h2>
+<br />
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+
+            <form method="post" asp-action="New" asp-controller="Event">
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Denumirea Concursului</label>
+                    <br />
+                    <input asp-for="Name" class="form-control" />
+
+                    <!-- Mesaj de validare  -->
+                    <span asp-validation-for="Name" class="text-danger"></span>
+
+                    <br /><br />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">Descrierea Concursului</label>
+                    <br />
+                    <textarea asp-for="Description" class="form-control"></textarea>
+
+                    <!-- Mesaj de validare -->
+                    <span asp-validation-for="Description" class="text-danger"></span>
+
+                    <br /><br />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Image">Adauga o imagine reprezentativa pentru concurs</label>
+                    <input type="url" class="form-control" id="Image" name="Image" value="@Model.Image" />
+                </div>
+
+                <button class="details-button" type="submit">Adauga Concurs</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
