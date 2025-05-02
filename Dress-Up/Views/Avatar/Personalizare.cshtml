@@ -96,7 +96,10 @@
     <div class="avatar-zone">
         <canvas id="avatarCanvas" width="400" height="650"></canvas>
         <div style="margin-top: 1rem;">
-            <button onclick="saveAvatar()">Salvează outfit</button>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <button onclick="saveAvatar()">Salvează outfit</button>
+            }
             <button onclick="resetAvatar()">Resetează avatarul</button>
         </div>
     </div>
@@ -143,7 +146,20 @@
                 if (layers[categ]) {
                     const img = new Image();
                     img.src = layers[categ];
-                    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    if(categ == 'base')
+                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    else if(categ == 'dresses')
+                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    else if (categ == 'pants')
+                        img.onload = () => ctx.drawImage(img, 50, 210, canvas.width - 95, canvas.height - 120);
+                    else if (categ == 'tops')
+                        img.onload = () => ctx.drawImage(img, 75, 85, canvas.width - 150, canvas.height / 2);
+                    else if (categ == 'shoes')
+                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    else if (categ == 'accessories')
+                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    else if(categ == 'hair')
+                        img.onload = () => ctx.drawImage(img, 100, -40, canvas.width/2, canvas.height/2);   
                 }
             });
         }
@@ -163,6 +179,15 @@
 
         function updateLayer(categ, imagePath) {
             layers[categ] = imagePath;
+            if (categ == 'dresses') {
+                layers['pants'] = null; // dacă alegi o rochie, elimină pantalonii
+                layers['tops'] = null; // dacă alegi o rochie, elimină topul
+            }
+            else if(categ == 'pants')
+                layers['dresses'] = null; // dacă alegi pantaloni, elimină rochia
+            else if (categ == 'tops') 
+                layers['dresses'] = null; // dacă alegi top, elimină rochia
+           
             drawAvatar();
         }
 

@@ -4,15 +4,26 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Dress_Up.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dress_Up.Controllers
 {
 
     public class AvatarController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+
+        public AvatarController(ApplicationDbContext context, UserManager<User> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
         public IActionResult Index()
         {
-            return View(); // afiseaza cele 3 avatare
+            var avatars = _context.Avatars.ToList(); // parcurge toate avatarele
+            return View(avatars); // trimite lista în View
         }
 
         [HttpGet]
@@ -36,14 +47,17 @@ namespace Dress_Up.Controllers
 
             System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
 
+            User user = _userManager.GetUserAsync(User).Result;
             Outfit outfit = new Outfit();
-            //outfit.Id = ? 
-            outfit.Image = filePath;
+            outfit.Image = $"/avatars/{fileName}";
             outfit.Name = fileName; //numele va putea fi editat ulterior
-            //outfit.UserId = User.Identity.Name; //aici ar trebui sa fie id ul user ului
+            outfit.User = user; // nu e niciodata null pt ca butonul de salvare apare doar daca user ul este autentificat
             outfit.Date_added = DateTime.Now;
             outfit.IsPublic = false;
             outfit.Description = "Avatar personalizat"; //descrierea o sa poata fi editata ulterior
+            _context.Outfits.Add(outfit); //adaug outfit ul in baza de date
+            user.Outfits.Add(outfit); //adaug outfit ul in colectia user ului
+            _context.SaveChanges(); // aici se generează Id-ul
 
 
             return Ok(new { imagePath = $"/avatars/{fileName}" });

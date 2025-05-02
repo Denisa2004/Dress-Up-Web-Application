@@ -9,11 +9,11 @@
 <h2>Selectează un avatar</h2>
 
 <div style="display: flex; gap: 2rem; justify-content: center;">
-    @for (int i = 1; i <= 3; i++) //aici va trebui sa parcurgem din baza de date, nu  din images
+    @foreach (var avatar in Model) // iterez prin fiecare avatar
     {
         <div style="text-align: center;">
-            <a href="@Url.Action("Personalizare", "Avatar", new { id = i })">
-                <img src="@Url.Content($"~/images/base{i}.png")" alt="Avatar @i" width="200" style="border-radius: 12px;" />
+            <a href="@Url.Action("Personalizare", "Avatar", new { id = avatar.Id })">
+                <img src="@Url.Content($"~/images/base{avatar.Id}.png")" alt="Avatar @avatar.Id" width="200" style="border-radius: 12px;" /> 
                 <br />
                 <button class="btn btn-primary mt-2">Selectează</button>
             </a>

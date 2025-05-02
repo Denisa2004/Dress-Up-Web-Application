@@ -10,6 +10,11 @@ namespace Dress_Up.Data
             : base(options)
         {
         }
+
+        public DbSet<Outfit> Outfits { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Avatar> Avatars { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

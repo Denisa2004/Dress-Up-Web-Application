@@ -1,4 +1,6 @@
-﻿namespace Dress_Up.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Dress_Up.Models
 {
     public class Outfit
     {
