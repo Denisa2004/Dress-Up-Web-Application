@@ -19,7 +19,6 @@ public class EventController : Controller
     public async Task<IActionResult> Index()
     {
         var events = await db.Events
-            .Where(e => e.IsActive)
             .Include(e => e.UserEvents)
             .ToListAsync();
 
@@ -98,13 +97,17 @@ public class EventController : Controller
         {
             ev.Description = $"Castigatorul este: {castigator.OutfitName}";
         }
+        else
+        {
+            ev.Description = $"Nu exista castigator.";
+        }
 
         await db.SaveChangesAsync();
         return RedirectToAction(nameof(Index)); // => POST /event/stop/5
     }
 
 
-    //stergerea unui bookmark
+    //stergerea unui concurs
     [HttpPost]
     [Authorize(Roles = "Admin")]
 

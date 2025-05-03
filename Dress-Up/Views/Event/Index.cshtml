@@ -1,11 +1,14 @@
 ﻿@model List<Dress_Up.Models.Event>
 
 @{
-    ViewBag.Title = "Evenimente Active";
+    ViewBag.Title = "Evenimente";
     var evenimente = Model;
+    var evenimenteActive = evenimente.Where(e => e.IsActive).ToList();
+    var evenimenteInactive = evenimente.Where(e => !e.IsActive).ToList(); // Evenimente inactive
 }
 
-@if (evenimente == null || !evenimente.Any())
+<!-- Evenimente Active -->
+@if (evenimenteActive == null || !evenimenteActive.Any())
 {
     <div class="alert alert-warning text-center">
         Nu există evenimente active.
@@ -14,7 +17,8 @@
 else
 {
     <div class="row">
-        @foreach (var ev in evenimente)
+        <h3>Evenimente la care poți participa:</h3>
+        @foreach (var ev in evenimenteActive) 
         {
             <div class="col-md-4 mb-4">
                 <div class="card h-100 clickable-card" data-url="@Url.Action("Show", "Event", new { id = ev.Id })">
@@ -34,25 +38,48 @@ else
                             <form asp-action="Delete" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2" onsubmit="return confirm('Ești sigur că vrei să ștergi acest concurs?');" onclick="event.stopPropagation();">
                                 <button type="submit" class="btn btn-danger">Șterge Concursul</button>
                             </form>
-
                         }
                     </div>
                 </div>
             </div>
-
-            
         }
-
-
-        @if (User.IsInRole("Admin"))
-        {
-            <form asp-action="New" asp-controller="Event" method="post" class="mt-2">
-                <button type="submit" class="btn btn-success">Adaugă un concurs</button>
-            </form>
-        }
-
     </div>
-    @section Scripts {
+}
+
+<!-- Evenimente Inactive -->
+@if (evenimenteInactive == null || !evenimenteInactive.Any())
+{
+    <div class="alert alert-info text-center">
+        Nu există evenimente din trecut.
+    </div>
+}
+else
+{
+    <div class="row">
+        <h3>Evenimente din trecut:</h3>
+        @foreach (var ev in evenimenteInactive) 
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100" style="opacity: 0.6; filter: grayscale(100%);">
+                    <img src="@ev.Image" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h4 class="card-title">@ev.Name</h4>
+                        <p class="card-text">@ev.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <form asp-action="New" asp-controller="Event" method="post" class="mt-2">
+        <button type="submit" class="btn btn-success">Adaugă un concurs</button>
+    </form>
+}
+
+@section Scripts {
     <script>
         document.querySelectorAll(".clickable-card").forEach(card => {
             card.addEventListener("click", () => {
@@ -63,5 +90,4 @@ else
             });
         });
     </script>
-    }
 }
