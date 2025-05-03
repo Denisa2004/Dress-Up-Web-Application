@@ -3,26 +3,36 @@
     ViewBag.Title = "Participă la eveniment";
     var eventId = ViewBag.EventId;
 }
-
-<h2>Alege un outfit pentru participare</h2>
-
-<form asp-action="Participate" asp-route-eventId="@eventId" method="post">
-    <div class="row">
-        @foreach (var outfit in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <label>
-                        <input type="radio" name="outfitId" value="@outfit.Id" style="display:none;" required />
-                        <img src="@outfit.Image" class="card-img-top" style="height: 250px; object-fit: cover;" alt="@outfit.Name" />
-                        <div class="card-body">
-                            <h5 class="card-title">@outfit.Name</h5>
-                        </div>
-                    </label>
-                </div>
-            </div>
-        }
+@if(Model is null){
+    <div class="alert alert-warning text-center">
+        Nu ai creat niciun outfit inca.
+        Mai intai iti creezi un outfit si dupa aceea poti participa.
     </div>
+    <a href="@Url.Action("New", "Outfit")" class="btn btn-success" onclick="event.stopPropagation();">Creeaza un outfit</a>
 
-    <button type="submit" class="btn btn-success">Participa</button>
-</form>
+}
+else{
+    <h2>Alege un outfit pentru participare</h2>
+
+    <form asp-action="Participate" asp-route-eventId="@eventId" method="post">
+        <div class="row">
+            @foreach (var outfit in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <label>
+                            <input type="radio" name="outfitId" value="@outfit.Id" style="display:none;" required />
+                            <img src="@outfit.Image" class="card-img-top" style="height: 250px; object-fit: cover;" alt="@outfit.Name" />
+                            <div class="card-body">
+                                <h5 class="card-title">@outfit.Name</h5>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-success">Participa</button>
+    </form>
+
+}

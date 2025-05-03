@@ -1,15 +1,15 @@
-﻿@{
+﻿@model List<Dress_Up.Models.Event>
+
+@{
     ViewBag.Title = "Evenimente Active";
-    var evenimente = ViewBag.Events as List<Event>;
-    bool esteAdmin = ViewBag.EsteAdmin ?? false;
+    var evenimente = Model;
 }
 
 @if (evenimente == null || !evenimente.Any())
 {
     <div class="alert alert-warning text-center">
-        Nu exista evenimente active.
+        Nu există evenimente active.
     </div>
-    <a 
 }
 else
 {
@@ -17,24 +17,51 @@ else
         @foreach (var ev in evenimente)
         {
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="@Url.Content("~/images/events/" + ev.Image)" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
+                <div class="card h-100 clickable-card" data-url="@Url.Action("Show", "Event", new { id = ev.Id })">
+                    <img src="@ev.Image" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
                     <div class="card-body">
                         <h4 class="card-title">@ev.Name</h4>
                         <p class="card-text">@ev.Description</p>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="@Url.Action("Participate", "Event", new { eventId = ev.Id })" class="btn btn-success">Participa</a>
+                        <a href="@Url.Action("Participate", "Event", new { eventId = ev.Id })" class="btn btn-success" onclick="event.stopPropagation();">Participă</a>
 
-                        @if (esteAdmin)
+                        @if (User.IsInRole("Admin"))
                         {
-                            <form asp-action="Stop" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2">
+                            <form asp-action="Stop" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2" onclick="event.stopPropagation();">
                                 <button type="submit" class="btn btn-danger">Oprește Concurs</button>
                             </form>
+                            <form asp-action="Delete" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2" onsubmit="return confirm('Ești sigur că vrei să ștergi acest concurs?');" onclick="event.stopPropagation();">
+                                <button type="submit" class="btn btn-danger">Șterge Concursul</button>
+                            </form>
+
                         }
                     </div>
                 </div>
             </div>
+
+            
         }
+
+
+        @if (User.IsInRole("Admin"))
+        {
+            <form asp-action="New" asp-controller="Event" method="post" class="mt-2">
+                <button type="submit" class="btn btn-success">Adaugă un concurs</button>
+            </form>
+        }
+
     </div>
+    @section Scripts {
+    <script>
+        document.querySelectorAll(".clickable-card").forEach(card => {
+            card.addEventListener("click", () => {
+                const url = card.getAttribute("data-url");
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+    }
 }

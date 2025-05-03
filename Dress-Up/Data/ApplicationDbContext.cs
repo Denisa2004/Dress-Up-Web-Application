@@ -15,27 +15,31 @@ namespace Dress_Up.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
 
+        public DbSet<Event> Events { get; set; }
+
+        public DbSet<UserEvent> UserEvents { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserEvent>()
                 .HasOne(ue => ue.User)
-                .WithMany() // dacă nu ai colecție de UserEvent în User
+                .WithMany(u => u.UserEvents)
                 .HasForeignKey(ue => ue.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserEvent>()
                 .HasOne(ue => ue.Event)
-                .WithMany()
+                .WithMany(e => e.UserEvents)
                 .HasForeignKey(ue => ue.EventId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserEvent>()
                 .HasOne(ue => ue.Outfit)
                 .WithMany()
                 .HasForeignKey(ue => ue.OutfitId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // sau .Cascade, cum preferi
         }
 
     }
