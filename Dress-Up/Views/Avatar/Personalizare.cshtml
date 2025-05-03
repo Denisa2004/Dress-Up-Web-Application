@@ -10,7 +10,7 @@
     var avatarId = ViewBag.AvatarId;
 }
 
-<h2>Personalizează-ți avatarul</h2>
+<h2>Customize your Avatar</h2>
 
 <style>
 
@@ -98,9 +98,9 @@
         <div style="margin-top: 1rem;">
             @if (User.Identity.IsAuthenticated)
             {
-                <button onclick="saveAvatar()">Salvează outfit</button>
+                <button onclick="saveAvatar()">Save Outfit</button>
             }
-            <button onclick="resetAvatar()">Resetează avatarul</button>
+            <button onclick="resetAvatar()">Reset</button>
         </div>
     </div>
 
@@ -137,12 +137,12 @@
 
         const Categories = ['base', 'dresses', 'pants', 'tops', 'shoes', 'accessories', 'hair'];
 
-        function drawAvatar() {
+        function drawAvatar() {//afisare avatar
             const canvas = document.getElementById("avatarCanvas");
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            Categories.forEach(categ => {
+            Categories.forEach(categ => { //pentru fiecare categorie aleg coordonatele de start si dimensiunile
                 if (layers[categ]) {
                     const img = new Image();
                     img.src = layers[categ];
@@ -177,7 +177,7 @@
             drawAvatar();
         }
 
-        function updateLayer(categ, imagePath) {
+        function updateLayer(categ, imagePath) { //actualizare layers la alegerea unui item
             layers[categ] = imagePath;
             if (categ == 'dresses') {
                 layers['pants'] = null; // dacă alegi o rochie, elimină pantalonii
@@ -208,7 +208,7 @@
             }
         }
 
-        function saveAvatar() {
+        function saveAvatar() { //salvare avatar
             const canvas = document.getElementById("avatarCanvas");
             const imageData = canvas.toDataURL("image/png");
 
@@ -226,7 +226,7 @@
                 });
         }
 
-        window.onload = () => {
+        window.onload = () => { //afisare avatar la incarcarea paginii
             drawAvatar();
         };
     </script>

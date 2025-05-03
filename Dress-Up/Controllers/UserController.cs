@@ -37,13 +37,14 @@ public class UserController : Controller
         {
             var UserOutfits = _context.Outfits.Where(u => u.User.Id == id);
             ViewBag.UserOutfits = UserOutfits;
-
+            ViewBag.AfisareButoane = true; //pentru a sti daca afisez butoanele de editare sau nu
             return View(user);
         }
         else
         {
             var UserOutfits = _context.Outfits.Where(u => u.User.Id == id && u.IsPublic == true);
             ViewBag.UserOutfits = UserOutfits;
+            ViewBag.AfisareButoane = false;
 
             return View(user);
         }

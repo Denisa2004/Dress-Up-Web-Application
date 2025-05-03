@@ -6,7 +6,7 @@
     ViewData["Title"] = "Selectează un avatar";
 }
 
-<h2>Selectează un avatar</h2>
+<h2>Choose your Avatar</h2>
 
 <div style="display: flex; gap: 2rem; justify-content: center;">
     @foreach (var avatar in Model) // iterez prin fiecare avatar
@@ -15,7 +15,7 @@
             <a href="@Url.Action("Personalizare", "Avatar", new { id = avatar.Id })">
                 <img src="@Url.Content($"~/images/base{avatar.Id}.png")" alt="Avatar @avatar.Id" width="200" style="border-radius: 12px;" /> 
                 <br />
-                <button class="btn btn-primary mt-2">Selectează</button>
+                <button class="btn btn-primary mt-2">Select</button>
             </a>
         </div>
     }
