@@ -1,9 +1,10 @@
 ﻿using Dress_Up.Data;
 using Dress_Up.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 [Route("event")]
 public class EventController : Controller
@@ -15,18 +16,19 @@ public class EventController : Controller
         db = context;
     }
 
+    // Afișează toate evenimentele (active + inactive)
     [HttpGet]
     public async Task<IActionResult> Index()
     {
         var events = await db.Events
             .Include(e => e.UserEvents)
+                .ThenInclude(ue => ue.Outfit)
             .ToListAsync();
 
         return View(events);
     }
 
-
-
+    // Afișează detalii pentru un eveniment
     [HttpGet("show/{id}")]
     public async Task<IActionResult> Show(int id)
     {
@@ -35,21 +37,25 @@ public class EventController : Controller
                 .ThenInclude(ue => ue.User)
             .Include(e => e.UserEvents)
                 .ThenInclude(ue => ue.Outfit)
+            .Include(e => e.Votes)
+                .ThenInclude(v => v.Outfit)
             .FirstOrDefaultAsync(e => e.Id == id);
 
         if (ev == null)
             return NotFound();
 
-        return View(ev); // => /event/show/5
+        return View(ev);
     }
 
+    // GET: Creare nou concurs
     [HttpGet("new")]
     [Authorize(Roles = "Admin")]
     public IActionResult New()
     {
-        return View(); // => /event/new
+        return View();
     }
 
+    // POST: Creare nou concurs
     [HttpPost("new")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
@@ -60,13 +66,13 @@ public class EventController : Controller
             ev.IsActive = true;
             db.Events.Add(ev);
             await db.SaveChangesAsync();
-            return RedirectToAction("Index", "Event");
-
+            return RedirectToAction("Index");
         }
 
-        return View(new Event());
+        return View(ev);
     }
 
+    // POST: Oprește un concurs
     [HttpPost("stop/{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Stop(int id)
@@ -93,57 +99,43 @@ public class EventController : Controller
             .OrderByDescending(g => g.Count)
             .FirstOrDefault();
 
-        if (castigator != null)
-        {
-            ev.Description = $"Castigatorul este: {castigator.OutfitName}";
-        }
-        else
-        {
-            ev.Description = $"Nu exista castigator.";
-        }
+        ev.Description = castigator != null
+            ? $"Castigatorul este: {castigator.OutfitName}"
+            : "Nu există câștigător.";
 
         await db.SaveChangesAsync();
-        return RedirectToAction(nameof(Index)); // => POST /event/stop/5
+        return RedirectToAction(nameof(Index));
     }
 
-
-    //stergerea unui concurs
-    [HttpPost]
+    // POST: Șterge un concurs
+    [HttpPost("delete/{id}")]
     [Authorize(Roles = "Admin")]
-
-    public ActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var @event = db.Events
+        var ev = await db.Events
             .Include(e => e.UserEvents)
-            .FirstOrDefault(e => e.Id == id);
+            .FirstOrDefaultAsync(e => e.Id == id);
 
-        if (@event == null)
-        {
+        if (ev == null)
             return NotFound();
-        }
 
-        if (User.IsInRole("Admin"))
+        if (ev.UserEvents != null)
         {
-
-            if (@event.UserEvents != null && @event.UserEvents.Any())
-            {
-                db.UserEvents.RemoveRange(@event.UserEvents);
-            }
-
-            db.Events.Remove(@event);
-            db.SaveChanges();
-
-            TempData["message"] = "Concursul a fost eliminat.";
-            TempData["messageType"] = "alert-success";
-
-            return RedirectToAction("Index");
+            db.UserEvents.RemoveRange(ev.UserEvents);
         }
+
+        db.Events.Remove(ev);
+        await db.SaveChangesAsync();
+
+        TempData["message"] = "Concursul a fost eliminat.";
+        TempData["messageType"] = "alert-success";
 
         return RedirectToAction("Index");
     }
 
-
+    // GET: Participare la concurs (alege un outfit)
     [HttpGet("participate/{eventId}")]
+    [Authorize]
     public async Task<IActionResult> Participate(int eventId)
     {
         var ev = await db.Events.FindAsync(eventId);
@@ -158,10 +150,12 @@ public class EventController : Controller
             return Unauthorized();
 
         ViewBag.EventId = eventId;
-        return View(user.Outfits.ToList()); // => GET /event/participate/5
+        return View(user.Outfits.ToList());
     }
 
+    // POST: Participare cu outfit
     [HttpPost("participate/{eventId}")]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Participate(int eventId, int outfitId)
     {
@@ -180,7 +174,7 @@ public class EventController : Controller
             .AnyAsync(ue => ue.UserId == user.Id && ue.EventId == eventId);
 
         if (alreadyJoined)
-            return BadRequest("Poti participa cu un singur outfit la un eveniment.");
+            return BadRequest("Poți participa cu un singur outfit la un eveniment.");
 
         var userEvent = new UserEvent
         {
@@ -192,6 +186,75 @@ public class EventController : Controller
         db.UserEvents.Add(userEvent);
         await db.SaveChangesAsync();
 
-        return RedirectToAction("Index", "Event"); // => POST /event/participate/5
+        return RedirectToAction("Index", "Event");
     }
+    [HttpGet("vote/{eventId}")]
+    [Authorize]
+    public async Task<IActionResult> Vote(int eventId)
+    {
+        var ev = await db.Events
+            .Include(e => e.UserEvents)
+                .ThenInclude(ue => ue.Outfit)
+            .Include(e => e.UserEvents)
+                .ThenInclude(ue => ue.User)
+            .FirstOrDefaultAsync(e => e.Id == eventId);
+
+        if (ev == null || !ev.IsActive)
+            return NotFound();
+
+        var user = await db.Users
+            .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+        if (user == null)
+            return Unauthorized();
+
+        // Poți adăuga aici o verificare dacă a votat deja, dacă vrei
+
+        ViewBag.EventId = eventId;
+        return View("Vote", ev);  // ✅ Corect: trimiți modelul de tip Event către view-ul Vote.cshtml
+    }
+
+
+    // GET: Votează un outfit
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SubmitVote(int eventId, int outfitId)
+    {
+        var ev = await db.Events
+            .Include(e => e.Votes)
+            .FirstOrDefaultAsync(e => e.Id == eventId);
+
+        if (ev == null || !ev.IsActive)
+            return NotFound();
+
+        var user = await db.Users
+            .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+        if (user == null)
+            return Unauthorized();
+
+        var alreadyVoted = await db.Votes
+            .AnyAsync(v => v.EventId == eventId && v.UserId == user.Id);
+
+        if (alreadyVoted)
+        {
+            TempData["Error"] = "Ai votat deja în acest concurs.";
+            return RedirectToAction("Vote", new { eventId });
+        }
+
+        var vote = new Vote
+        {
+            UserId = user.Id,
+            OutfitId = outfitId,
+            EventId = eventId,
+            Date_Voted = DateTime.Now
+        };
+
+        ev.Votes.Add(vote);
+        db.Votes.Add(vote);
+        await db.SaveChangesAsync();
+
+        return RedirectToAction("Show","Event", new { id = eventId });
+    }
+
 }

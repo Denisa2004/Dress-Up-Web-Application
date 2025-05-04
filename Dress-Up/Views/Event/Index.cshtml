@@ -29,7 +29,7 @@ else
                     </div>
                     <div class="card-footer text-center">
                         <a href="@Url.Action("Participate", "Event", new { eventId = ev.Id })" class="btn btn-success" onclick="event.stopPropagation();">Participă</a>
-
+                        <a class="btn btn-success" href="@Url.Action("Vote", "Event", new { eventId = ev.Id})">Voteaza</a>
                         @if (User.IsInRole("Admin"))
                         {
                             <form asp-action="Stop" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2" onclick="event.stopPropagation();">

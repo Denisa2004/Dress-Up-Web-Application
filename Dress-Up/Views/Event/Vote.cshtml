@@ -1,0 +1,52 @@
+﻿@model Dress_Up.Models.Event
+
+@{
+    ViewData["Title"] = "Votează Outfituri";
+    var currentUserId = User.Identity.Name;
+    bool isParticipating = Model.UserEvents.Any(ue => ue.User.UserName == currentUserId);
+}
+
+<h2 class="text-center mb-4">Votează Outfitul Preferat</h2>
+
+@if (!Model.UserEvents.Any())
+{
+    <div class="alert alert-warning text-center">
+        Nu există participanți înscriși la acest concurs... încă.
+    </div>
+}
+else if ((User.IsInRole("User") || User.IsInRole("Admin")) && isParticipating)
+{
+    <!-- Formularul pentru trimiterea votului -->
+    <form asp-action="SubmitVote" asp-controller="Event" method="post">
+        <input type="hidden" name="eventId" value="@Model.Id" />
+
+        <div class="row">
+            @foreach (var ue in Model.UserEvents)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border rounded">
+                        <img src="@ue.Outfit.Image" class="card-img-top" alt="Outfit Image" style="height: 250px; object-fit: cover;" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@ue.Outfit.Name</h5>
+                            <p class="card-text text-muted">@ue.Outfit.Description</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <input type="radio" name="outfitId" value="@ue.Outfit.Id" id="outfit_@ue.Outfit.Id" class="form-check-input me-2" />
+                            <label for="outfit_@ue.Outfit.Id">Votează</label>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Trimite Votul</button>
+        </div>
+    </form>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        Trebuie să participi la concurs pentru a putea vota.
+    </div>
+}

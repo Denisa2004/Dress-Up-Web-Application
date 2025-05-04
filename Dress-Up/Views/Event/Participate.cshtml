@@ -1,30 +1,34 @@
-﻿@model List<Outfit>
+﻿@model List<Dress_Up.Models.Outfit>
 @{
-    ViewBag.Title = "Participă la eveniment";
+    ViewBag.Title = "Participă la Eveniment";
     var eventId = ViewBag.EventId;
 }
-@if(Model is null){
-    <div class="alert alert-warning text-center">
-        Nu ai creat niciun outfit inca.
-        Mai intai iti creezi un outfit si dupa aceea poti participa.
-    </div>
-    <a href="@Url.Action("New", "Outfit")" class="btn btn-success" onclick="event.stopPropagation();">Creeaza un outfit</a>
 
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        Nu ai creat niciun outfit încă. Creează unul pentru a participa.
+    </div>
+    <div class="text-center">
+        <a href="@Url.Action("Personalizare", "Avatar")" class="btn btn-success">Creează un Avatar</a>
+    </div>
 }
-else{
-    <h2>Alege un outfit pentru participare</h2>
+else
+{
+    <h2 class="text-center mb-4">Alege un Avatar pentru a participa</h2>
 
     <form asp-action="Participate" asp-route-eventId="@eventId" method="post">
         <div class="row">
             @foreach (var outfit in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="card h-100 text-center">
-                        <label>
-                            <input type="radio" name="outfitId" value="@outfit.Id" style="display:none;" required />
+                    <div class="card h-100 shadow outfit-card text-center">
+                        <label class="selectable-card" for="outfit_@outfit.Id">
+                            <input type="radio" name="outfitId" value="@outfit.Id" id="outfit_@outfit.Id" class="d-none" required />
                             <img src="@outfit.Image" class="card-img-top" style="height: 250px; object-fit: cover;" alt="@outfit.Name" />
                             <div class="card-body">
                                 <h5 class="card-title">@outfit.Name</h5>
+                                <p class="card-text text-muted">@outfit.Description</p>
                             </div>
                         </label>
                     </div>
@@ -32,7 +36,9 @@ else{
             }
         </div>
 
-        <button type="submit" class="btn btn-success">Participa</button>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Participă</button>
+        </div>
     </form>
 
 }

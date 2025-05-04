@@ -14,6 +14,9 @@ namespace Dress_Up.Data
         public DbSet<Outfit> Outfits { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
+        public DbSet <Vote> Votes { get; set; }
+
+        public DbSet <Comment> Comments { get; set; }
 
         public DbSet<Event> Events { get; set; }
 
@@ -22,6 +25,13 @@ namespace Dress_Up.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<Vote>()
+                .HasOne(v => v.Event)
+                .WithMany(b => b.Votes)
+                .HasForeignKey(v => v.EventId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserEvent>()
                 .HasOne(ue => ue.User)
