@@ -23,7 +23,8 @@ namespace Dress_Up.Controllers
         public IActionResult Index()
         {
             var avatars = _context.Avatars.ToList(); // parcurge toate avatarele
-            return View(avatars); // trimite lista în View
+            ViewBag.Avatars = avatars;
+            return View(); // trimite lista în View
         }
 
         [HttpGet]
