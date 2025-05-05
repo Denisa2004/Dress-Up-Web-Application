@@ -7,7 +7,7 @@
 <div >
 <h2>@Model.UserName</h2>
 
-@if (ViewBag.AfisareButoane)
+@if (ViewBag.AfisareButoane) //editare profil doar daca e contul propriu sau e admin
 {
     <div class="text-end">
         <a href="@Url.Action("Edit", "User", new { id = @Model.Id })" class="btn btn-danger">Edit Profile</a>
@@ -24,7 +24,10 @@
         @foreach (var outfit in ViewBag.UserOutfits) //afisarea outfit urilor salvate ale userului in functie de vizibilitate(vizibilitate verificata in Controller)
         {
             <div style="text-align: center;">
-                <img src="@outfit.Image" alt="@outfit.Name" width="200" style="border-radius: 12px;" /> 
+                @* buton de afisare integrala a outfitului *@
+                <a href="@Url.Action("Show", "Outfit", new { id = outfit.Id })">
+                    <img src="@outfit.Image" alt="@outfit.Name" width="200" style="border-radius: 12px;" /> 
+                </a>
                 <p>@outfit.Name</p>
                 <p><small>@outfit.Date_added.ToShortDateString()</small></p>
                 <p><small>@outfit.Description</small></p>
@@ -32,6 +35,7 @@
                 {
                     <p><a href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" id="delUser">Delete</a></p>
                     <p> <a href="@Url.Action("Edit", "Outfit", new { id = outfit.Id })">Edit</a></p>
+                    <p> <a href="@Url.Action("PublicaOutfit", "User", new { id = outfit.Id })">Public</a></p>
 
                     @* alerta stergere outfit din profil *@
                     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">

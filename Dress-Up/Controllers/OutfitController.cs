@@ -1,24 +1,26 @@
-﻿
-using Dress_Up.Data;
+﻿using Dress_Up.Data;
 using Dress_Up.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public class OutfitController : Controller
+namespace Dress_Up.Controllers;
+
+public class OutfitController(ApplicationDbContext context, UserManager<User> userManager) : Controller
 {
-    private readonly ApplicationDbContext db;
-    private readonly UserManager<User> _userManager;
-    public OutfitController(
-    ApplicationDbContext context,
-    UserManager<User> userManager
-    )
+    private readonly ApplicationDbContext db = context;
+    private readonly UserManager<User> _userManager = userManager;
+
+    //vizualizare intgrala a unui outfit
+    [HttpGet]
+    public IActionResult Show(int id)
     {
-        db = context;
-        _userManager = userManager;
+        var outfit = db.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+        ViewBag.Outfit = outfit;
+        return View(); 
     }
 
-    // GET: Outfit/Edit
+    // editarea nmelui, descrierii si vizibilitatii unui outfit
     public ActionResult Edit(int id)
     {
         var otd = db.Outfits.Find(id);
@@ -46,6 +48,7 @@ public class OutfitController : Controller
         return View(outfit);
     }
 
+    //stergere outfit
     [HttpPost]
     public ActionResult Delete(int id)
     {
