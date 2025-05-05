@@ -1,0 +1,25 @@
+﻿@* aici imi doresc sa fie prima pagina care apare dupa ce alegi actiunea "creeaza avatar"
+    - sa apara toate avatarele disponibile, impreuna cu un buton de selectare or something
+    - dupa ce selectezi un avatar sa te duca la pagina de personalizare a avatarului *@
+
+@{
+    ViewData["Title"] = "Selectează un avatar";
+}
+
+<h2>Choose your Avatar</h2>
+
+<div style="display: flex; gap: 2rem; justify-content: center;">
+    @foreach (var avatar in ViewBag.Avatars) // iterez prin fiecare avatar
+    {
+        <div style="text-align: center;">
+            <a href="@Url.Action("Personalizare", "Avatar", new { id = avatar.Id })">
+                <img src="@Url.Content($"~/images/base{avatar.Id}.png")" alt="Avatar @avatar.Id" width="200" style="border-radius: 12px;" /> 
+                <br />
+                <button class="btn btn-primary mt-2">Select</button>
+            </a>
+        </div>
+    }
+</div>
+
+
+

@@ -1,0 +1,257 @@
+﻿@*
+    aici o sa fie in stanga avatarul pe care l-am ales, care se actualizeaza constant cand selectez un item,
+    iar in dreapta o sa fie toate optiunile de personalizare (adica dressing ul)
+        - o sa am un buton de salvare care sa salveze avatarul personalizat
+        - o sa am un buton de resetare care sa reseteze avatarul la starea initiala
+*@
+
+@{
+    ViewData["Title"] = "Personalizare Avatar";
+    var avatarId = ViewBag.AvatarId;
+}
+
+<h2>Personalizează-ți avatarul</h2>
+
+<style>
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 2rem;
+        gap: 2rem;
+    }
+
+    .avatar-zone {
+        flex: 1;
+        text-align: center;
+        margin-left: -50px;
+    }
+
+    #avatarCanvas {
+        width: 400px;
+        height: 650px;
+        border: 1px solid gray;
+    }
+
+    .wardrobe-zone {
+        background-image: url('/images/closet.png');
+        background-size: cover;
+        background-position: center;
+        width: 1250px;
+        height: 650px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 20px;
+        position: relative;
+    }
+
+    .category-icons {
+        position: absolute;
+        top: 30px;
+        left: 270px;
+        right: 100px;
+        display: flex;
+        justify-content: space-around;
+        z-index: 2;
+    }
+
+        .category-icons img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .category-icons img:hover {
+                transform: scale(1.2);
+            }
+
+    .clothes-display {
+        position: absolute;
+        top: 100px;
+        left: 200px;
+        bottom: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+    }
+
+        .clothes-display img {
+            width: 150px;
+            height: 300px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .clothes-display img:hover {
+                transform: scale(1.1);
+            }
+</style>
+
+<div class="container">
+    <!-- Avatar -->
+    <div class="avatar-zone">
+        <canvas id="avatarCanvas" width="400" height="650"></canvas>
+        <div style="margin-top: 1rem;">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <button onclick="saveAvatar()">Salvează outfit</button>
+            }
+            <button onclick="resetAvatar()">Resetează avatarul</button>
+        </div>
+    </div>
+
+    <!-- Dulap -->
+    <div class="wardrobe-zone">
+        <!-- Butoane cu iconițe categorii -->
+        <div class="category-icons">
+            <img src="/images/icons/tops.png" onclick="loadCategory('tops')" title="TOPS">
+            <img src="/images/icons/pants.png" onclick="loadCategory('pants')" title="PANTS">
+            <img src="/images/icons/dresses.png" onclick="loadCategory('dresses')" title="DRESSES">
+            <img src="/images/icons/shoes.png" onclick="loadCategory('shoes')" title="SHOES">
+            <img src="/images/icons/accessories.png" onclick="loadCategory('accessories')" title="ACCESSORIES">
+            <img src="/images/icons/hair.png" onclick="loadCategory('hair')" title="HAIR">
+        </div>
+
+        <!-- Haine -->
+        <div class="clothes-display" id="wardrobe-items">
+            <!-- Hainele se încarcă dinamic aici -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const itemPositions = {
+            "tops1": { x: 80, y: 145, w: 250, h: 220 },
+            "tops2": { x: 112, y: 150, w: 180, h: 200 },
+            "tops3": { x: 110, y: 142, w: 175, h: 210 },
+            "tops4": { x: 110, y: 144, w: 177, h: 220 },
+
+            "pants1": { x: 120, y: 290, w: 160, h: 320 },
+            "pants2": { x: 120, y: 290, w: 160, h: 320 },
+            "pants3": { x: 112, y: 265, w: 177, h: 320 },
+            "pants4": { x: 90, y: 260, w: 220, h: 320 },
+
+            "dresses1": { x: 90, y: 150, w: 220, h: 350 },
+            "dresses2": { x: 80, y: 170, w: 240, h: 350 },
+            "dresses3": { x: 60, y: 150, w: 290, h: 400 },
+            "dresses4": { x: 7, y: 122, w: 390, h: 530 },
+
+            "shoes1": { x: 140, y: 600, w: 100, h: 80 },
+            "shoes2": { x: 140, y: 600, w: 100, h: 80 },
+            "shoes3": { x: 152, y: 585, w: 97, h: 80 },
+            "shoes4": { x: 140, y: 600, w: 100, h: 80 },
+
+            "hair1": { x: 112, y: 22, w: 170, h: 235 },
+            "hair2": { x: 136, y: 22, w: 125, h: 180 },
+            "hair3": { x: 136, y: 27, w: 130, h: 145 },
+            "hair4": { x: 133, y: 20, w: 135, h: 175 },
+
+            "accessories1": { x: 230, y: 385, w: 80, h: 120 }, // geanta1
+            "accessories2": { x: 230, y: 385, w: 80, h: 120 }, // geanta2
+            "accessories3": { x: 195, y: 23, w: 50, h: 50 }, // fundita
+            "accessories4": { x: 135, y: 15, w: 140, h: 70 }, // palarie
+        };
+
+        let layers = {
+            base: { path: '@Url.Content($"~/images/base" + avatarId + ".png")', name: "base" },
+            hair: null,
+            tops: null,
+            pants: null,
+            dresses: null,
+            shoes: null,
+            accessories: null
+        };
+
+        const Categories = ['base', 'dresses', 'pants', 'tops', 'shoes', 'hair', 'accessories'];
+
+        function drawAvatar() {
+            const canvas = document.getElementById("avatarCanvas");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            Categories.forEach(categ => {
+                if (layers[categ] && layers[categ].path) {
+                    const img = new Image();
+                    img.src = layers[categ].path;
+                    img.onload = () => {
+                        const imageKey = layers[categ].name;
+                        const pos = itemPositions[imageKey] || { x: 0, y: 0, w: 400, h: 650 };
+                        ctx.drawImage(img, pos.x, pos.y, pos.w, pos.h);
+                    };
+                }
+            });
+        }
+
+        function resetAvatar() {
+            layers = {
+                base: { path: '@Url.Content($"~/images/base" + avatarId + ".png")', name: "base" },
+                hair: null,
+                tops: null,
+                pants: null,
+                dresses: null,
+                shoes: null,
+                accessories: null
+            };
+            drawAvatar();
+        }
+
+        function updateLayer(categ, imagePath, imageName) {
+            if (categ === "dresses") {
+                layers["tops"] = null;
+                layers["pants"] = null;
+            }
+
+            // Dacă alegi top sau pants => scoate rochia
+            if (categ === "tops" || categ === "pants") {
+                layers["dresses"] = null;
+            }
+
+            layers[categ] = { path: imagePath, name: imageName };
+            drawAvatar();
+        }
+
+        function loadCategory(category) {
+            const folderPath = `/images/${category}/`;
+            const imageCount = 4; // număr estimativ, ajustează dacă ai mai multe
+            const wardrobe = document.getElementById("wardrobe-items");
+            wardrobe.innerHTML = '';
+
+            for (let i = 1; i <= imageCount; i++) {
+                const imgPath = `${folderPath}${category}${i}.png`;
+
+                const img = document.createElement("img");
+                img.src = imgPath;
+                img.alt = category + i;
+                img.onclick = () => updateLayer(category, imgPath, category + i);
+                wardrobe.appendChild(img);
+            }
+        }
+
+        function saveAvatar() {
+            const canvas = document.getElementById("avatarCanvas");
+            const imageData = canvas.toDataURL("image/png");
+
+            fetch('/Avatar/Save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(imageData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert("Avatar salvat cu succes!");
+                })
+                .catch(error => {
+                    console.error("Eroare:", error);
+                });
+        }
+
+        window.onload = () => {
+            resetAvatar();
+        };
+
+    </script>
+}

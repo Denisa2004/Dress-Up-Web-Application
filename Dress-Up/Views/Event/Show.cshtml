@@ -1,0 +1,30 @@
+﻿@model Event
+
+<h2>@Model.Name</h2>
+<p>@Model.Description</p>
+<p><strong>Status:</strong> @(Model.IsActive ? "Activ" : "Inactiv")</p>
+<img src="@Model.Image" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
+
+<h4>Participanți:</h4>
+@if (Model.UserEvents.Any())
+{
+    <div class="row">
+        @foreach (var ue in Model.UserEvents)
+        {
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <img src="@ue.Outfit.Image" class="card-img-top" alt="Outfit imagine">
+                    <div class="card-body">
+                        <p class="card-text">@ue.Outfit.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Fi primul care se inscrie la acest eveniment.</p>
+    <a href="@Url.Action("Participate", "Event", new { eventId = @Model.Id })" class="btn btn-success" onclick="event.stopPropagation();">Participă</a>
+
+}

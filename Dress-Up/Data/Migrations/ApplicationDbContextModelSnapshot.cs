@@ -17,10 +17,157 @@ namespace Dress_Up.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Dress_Up.Models.Avatar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Avatars");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Clothes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OutfitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OutfitId");
+
+                    b.ToTable("Clothes");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date_created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_updated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OutfitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OutfitId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Outfit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date_added")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Outfits");
+                });
 
             modelBuilder.Entity("Dress_Up.Models.User", b =>
                 {
@@ -40,6 +187,9 @@ namespace Dress_Up.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -76,6 +226,8 @@ namespace Dress_Up.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -85,6 +237,67 @@ namespace Dress_Up.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.UserEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OutfitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("OutfitId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserEvents");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Vote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date_Voted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OutfitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("OutfitId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -167,12 +380,10 @@ namespace Dress_Up.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -209,12 +420,10 @@ namespace Dress_Up.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -222,6 +431,101 @@ namespace Dress_Up.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Clothes", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Outfit", null)
+                        .WithMany("Clothes")
+                        .HasForeignKey("OutfitId");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Comment", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Outfit", "Outfit")
+                        .WithMany()
+                        .HasForeignKey("OutfitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dress_Up.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Outfit");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Outfit", b =>
+                {
+                    b.HasOne("Dress_Up.Models.User", "User")
+                        .WithMany("Outfits")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.User", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Event", null)
+                        .WithMany("Users")
+                        .HasForeignKey("EventId");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.UserEvent", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Event", "Event")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dress_Up.Models.Outfit", "Outfit")
+                        .WithMany()
+                        .HasForeignKey("OutfitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dress_Up.Models.User", "User")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Outfit");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Vote", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Event", "Event")
+                        .WithMany("Votes")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Dress_Up.Models.Outfit", "Outfit")
+                        .WithMany()
+                        .HasForeignKey("OutfitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dress_Up.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Outfit");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -273,6 +577,27 @@ namespace Dress_Up.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Event", b =>
+                {
+                    b.Navigation("UserEvents");
+
+                    b.Navigation("Users");
+
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.Outfit", b =>
+                {
+                    b.Navigation("Clothes");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.User", b =>
+                {
+                    b.Navigation("Outfits");
+
+                    b.Navigation("UserEvents");
                 });
 #pragma warning restore 612, 618
         }
