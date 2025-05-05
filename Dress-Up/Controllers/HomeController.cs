@@ -28,5 +28,10 @@ namespace Dress_Up.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult HomeGuest()
+        {
+            return View();  //  HomeGuest.cshtml 
+        }
     }
 }

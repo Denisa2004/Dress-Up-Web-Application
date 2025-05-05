@@ -1,0 +1,51 @@
+﻿@{
+    // Meniul pentru guest, acum cu butoane fixate in dreapta jos si umbre roz
+}
+
+<div class="menu">
+    <a href="@Url.Action("Menu", "Home")" class="menu-button">Create Account</a>
+    <a href="@Url.Action("Index", "Avatar")" class="menu-button">Create One Outfit</a>
+    <a href="#" class="menu-button">Log Out</a>
+</div>
+
+<style>
+    .menu {
+        position: fixed;
+        bottom: 20px; /* Plasează meniul la 20px de jos */
+        right: 20px; /* Plasează meniul la 20px de dreapta */
+        display: flex;
+        flex-direction: column; /* Aliniază butoanele vertical */
+        gap: 15px; /* Spațiu între butoane */
+        z-index: 1000;
+    }
+
+    .menu-button {
+        padding: 12px 25px;
+        background-color: #f7b1c1;
+        color: white;
+        text-decoration: none;
+        border-radius: 25px; /* Colțuri rotunjite */
+        font-size: 16px;
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Umbra mai vizibilă */
+        transition: all 0.3s ease; /* Tranziție pentru efectele de hover */
+        width: 180px; /* Lățime fixă a butoanelor */
+        text-align: center;
+    }
+
+        .menu-button:hover {
+            background-color: #f14f86; /* Roz mai închis la hover */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Umbra mai mare la hover */
+            transform: scale(1.1); /* Mărirea butonului la hover */
+        }
+
+        .menu-button:active {
+            background-color: #e02d63; /* Culoare mai intensă când este apăsat */
+            transform: scale(1); /* La apăsare, butonul revine la dimensiunea inițială */
+        }
+
+    body {
+        margin-bottom: 80px; /* Dă spațiu pentru a nu se suprapune meniul cu conținutul */
+    }
+</style>

@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Home Guest";
+}
+
+<!-- Include meniul pentru guest -->
+@Html.Partial("_MenuG")
+
+<!-- Conținutul paginii Home pentru Guest -->
+<h1>Welcome to Home for Guests!</h1>
+<p>Acesta este un loc pentru viitoare funcționalități care vor fi adăugate mai târziu.</p>
+
+<div class="outfits-container">
+    @foreach (var outfit in Model.Outfits)
+    {
+        <div class="outfit-post">
+            <div class="outfit-details">
+                <img src="@outfit.ImageUrl" alt="Outfit image" class="outfit-image" />
+                <div class="outfit-info">
+                    <h3>@outfit.Name</h3>
+                    <p>@outfit.Description</p>
+                    <p><strong>Posted by:</strong> @outfit.User.UserName</p>
+                </div>
+            </div>
+
+            <!-- Butoane de like și comentarii -->
+            <div class="outfit-actions">
+                <button class="like-button" onclick="likeOutfit(@outfit.Id)">Like</button>
+                <button class="comment-button" onclick="commentOutfit(@outfit.Id)">Comment</button>
+            </div>
+
+            <!-- Secțiunea de comentarii -->
+            <div class="comments-section" id="comments-@outfit.Id">
+                @foreach (var comment in outfit.Comments) {
+                    <p><strong>@comment.User.UserName:</strong> @comment.Text</p>
+                }
+                <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+                <button class="submit-comment">Submit Comment</button>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    body {
+        margin-top: 60px;
+    }
+
+    .outfits-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .outfit-post {
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #f8f3fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .outfit-details {
+        display: flex;
+        gap: 15px;
+    }
+
+    .outfit-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .outfit-info h3 {
+        color: #f14f86;
+    }
+
+    .outfit-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .like-button, .comment-button {
+        padding: 10px 20px;
+        background-color: #f7b1c1;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .like-button:hover, .comment-button:hover {
+        background-color: #f14f86;
+    }
+
+    .comments-section {
+        margin-top: 20px;
+    }
+
+    .comment-input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .submit-comment {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #f7b1c1;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .submit-comment:hover {
+        background-color: #f14f86;
+    }
+</style>
