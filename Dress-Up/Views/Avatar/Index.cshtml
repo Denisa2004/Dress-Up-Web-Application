@@ -9,7 +9,7 @@
 <h2>Choose your Avatar</h2>
 
 <div style="display: flex; gap: 2rem; justify-content: center;">
-    @foreach (var avatar in Model) // iterez prin fiecare avatar
+    @foreach (var avatar in ViewBag.Avatars) // iterez prin fiecare avatar
     {
         <div style="text-align: center;">
             <a href="@Url.Action("Personalizare", "Avatar", new { id = avatar.Id })">
