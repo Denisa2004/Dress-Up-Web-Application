@@ -1,123 +1,249 @@
-﻿@{
-    ViewData["Title"] = "Home Guest";
-}
+﻿@model IEnumerable<Dress_Up.Models.Outfit>
 
-<!-- Include meniul pentru guest -->
 @Html.Partial("_MenuG")
+<h2 class="title">News‑Feed Outfits</h2>
 
-<!-- Conținutul paginii Home pentru Guest -->
-<h1>Welcome to Home for Guests!</h1>
-<p>Acesta este un loc pentru viitoare funcționalități care vor fi adăugate mai târziu.</p>
-
-<div class="outfits-container">
-    @foreach (var outfit in Model.Outfits)
+<div class="grid">
+    @foreach (var outfit in Model)
     {
-        <div class="outfit-post">
-            <div class="outfit-details">
-                <img src="@outfit.ImageUrl" alt="Outfit image" class="outfit-image" />
-                <div class="outfit-info">
-                    <h3>@outfit.Name</h3>
-                    <p>@outfit.Description</p>
-                    <p><strong>Posted by:</strong> @outfit.User.UserName</p>
-                </div>
+        var likeCount = outfit.Votes.Where(v => v.EventId == null).Count();
+            <!-- ★ -->
+
+        <div class="card">
+            <img src="@outfit.Image" class="card-img" />
+
+            <div class="card-body">
+                <h4>@outfit.Name</h4>
+                <p>@outfit.Description</p>
+                <small>
+                    by <strong>@outfit.User?.UserName</strong> |
+                    @outfit.Date_added.ToString("dd MMM yyyy HH:mm")
+                </small>
             </div>
 
-            <!-- Butoane de like și comentarii -->
-            <div class="outfit-actions">
-                <button class="like-button" onclick="likeOutfit(@outfit.Id)">Like</button>
-                <button class="comment-button" onclick="commentOutfit(@outfit.Id)">Comment</button>
-            </div>
+            <!-- LIKE -->
+            <form asp-controller="Outfit" asp-action="Like" asp-route-id="@outfit.Id"
+                  method="post" class="actions">
+                @Html.AntiForgeryToken()
+                <button class="btn-like" type="submit">❤ Like (@likeCount)</button>
+            </form>
 
-            <!-- Secțiunea de comentarii -->
-            <div class="comments-section" id="comments-@outfit.Id">
-                @foreach (var comment in outfit.Comments) {
-                    <p><strong>@comment.User.UserName:</strong> @comment.Text</p>
+            <!-- COMENTARII (identic cu varianta precedentă) -->
+            <details open class="comments">
+                <summary>💬 Comments (@((outfit.Comments?.Count() ?? 0)))</summary>
+
+                @foreach (var c in outfit.Comments.OrderByDescending(c => c.Date_created))
+                {
+                    <div class="comment">
+                        <strong>@(c.User?.UserName ?? "Guest"):</strong> @c.Content
+                        <small>@c.Date_created.ToString("dd.MM.yyyy HH:mm")</small>
+                    </div>
                 }
-                <textarea class="comment-input" placeholder="Add a comment..."></textarea>
-                <button class="submit-comment">Submit Comment</button>
-            </div>
+
+                <form asp-controller="Outfit" asp-action="AddComment" method="post" class="comment-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="outfitId" value="@outfit.Id" />
+                    <textarea name="content" placeholder="Add a comment…" required></textarea>
+                    <button type="submit">Post</button>
+                </form>
+            </details>
         </div>
     }
 </div>
 
+
 <style>
+    /* spaţiu pentru meniul fix din colţ */
     body {
-        margin-top: 60px;
+        margin: 80px 0 0;
+        font-family: Arial,Helvetica,sans-serif;
+        background: #fafafa
     }
 
-    .outfits-container {
+    .title {
+        text-align: center;
+        margin: 0 0 24px;
+        color: #333;
+        font-size: 1.9rem;
+        font-weight: 700;
+    }
+
+    /* —— GRILĂ —— */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); /* 3‑4 pe rând */
+        gap: 24px;
+        padding: 0 24px 48px;
+        max-width: 1600px; /* nu lăsăm card‑urile să se întindă pe tot ecranul ultra‑wide */
+        margin: auto;
+    }
+
+    /* —— CARD —— */
+    .card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 10px rgba(0,0,0,.08);
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        padding: 20px;
+        transition: transform .15s ease, box-shadow .15s ease;
     }
 
-    .outfit-post {
-        border: 1px solid #ccc;
-        padding: 15px;
-        border-radius: 10px;
-        background-color: #f8f3fa;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(0,0,0,.12);
+        }
 
-    .outfit-details {
-        display: flex;
-        gap: 15px;
-    }
-
-    .outfit-image {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .outfit-info h3 {
-        color: #f14f86;
-    }
-
-    .outfit-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .like-button, .comment-button {
-        padding: 10px 20px;
-        background-color: #f7b1c1;
-        border: none;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .like-button:hover, .comment-button:hover {
-        background-color: #f14f86;
-    }
-
-    .comments-section {
-        margin-top: 20px;
-    }
-
-    .comment-input {
+    .card-img {
         width: 100%;
-        padding: 10px;
-        margin-top: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
+        height: auto; /* lasă browser‑ul să calculeze */
+        object-fit: contain;
+        background: #fff;
     }
 
-    .submit-comment {
-        margin-top: 10px;
-        padding: 10px 20px;
-        background-color: #f7b1c1;
+    .card-body {
+        padding: 14px 16px 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .card-body h4 {
+            margin: 0;
+            font-size: 1.05rem;
+            color: #f14f86;
+        }
+
+        .card-body p {
+            margin: 0;
+            line-height: 1.3;
+            color: #555;
+            font-size: .9rem;
+            min-height: 36px;
+        }
+
+        .card-body small {
+            color: #888;
+            font-size: .75rem
+        }
+
+    /* —— ACŢIUNI —— */
+    .actions {
+        display: flex;
+        gap: 8px;
+        padding: 10px 12px 14px;
+        justify-content: center;
+    }
+
+    .btn-like, .btn-comm {
+        flex: 1;
+        padding: 6px 0;
         border: none;
-        color: white;
-        border-radius: 5px;
+        border-radius: 18px;
+        font-size: .8rem;
         cursor: pointer;
+        transition: all .2s;
     }
 
-    .submit-comment:hover {
-        background-color: #f14f86;
+    .btn-like {
+        background: #f7b1c1;
+        color: #fff
     }
+
+        .btn-like:hover {
+            background: #f14f86
+        }
+
+    .btn-comm {
+        background: #e0e0e0;
+        color: #333
+    }
+
+        .btn-comm:hover {
+            background: #d5d5d5
+        }
+
+    details.comments {
+        padding: 0 14px 14px;
+    }
+
+    details summary {
+        cursor: pointer;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        details summary::marker {
+            color: #f14f86;
+        }
+
+    .comment {
+        background: #fff4f7;
+        border: 1px solid #f7b1c1;
+        border-radius: 10px;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        font-size: .85rem;
+        line-height: 1.25;
+    }
+
+        .comment strong {
+            color: #d64577;
+        }
+
+        .comment small {
+            display: block;
+            color: #999;
+            font-size: .72rem;
+            margin-top: 3px;
+        }
+
+    .comment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: .85rem;
+        }
+
+        .comment-form button {
+            align-self: flex-end;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 20px;
+            background: #f7b1c1;
+            color: #fff;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s, transform .15s;
+        }
+
+            .comment-form button:hover {
+                background: #f14f86;
+                transform: translateY(-1px);
+            }
+
+            .comment-form button:active {
+                transform: translateY(0);
+            }
+
+    .btn-like {
+        box-shadow: 0 2px 4px rgba(241,79,134,.25);
+    }
+
 </style>
