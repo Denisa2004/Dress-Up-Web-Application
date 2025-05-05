@@ -10,10 +10,9 @@
     var avatarId = ViewBag.AvatarId;
 }
 
-<h2>Customize your Avatar</h2>
+<h2>Personalizează-ți avatarul</h2>
 
 <style>
-
     .container {
         display: flex;
         justify-content: space-between;
@@ -96,11 +95,8 @@
     <div class="avatar-zone">
         <canvas id="avatarCanvas" width="400" height="650"></canvas>
         <div style="margin-top: 1rem;">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <button onclick="saveAvatar()">Save Outfit</button>
-            }
-            <button onclick="resetAvatar()">Reset</button>
+            <button onclick="saveAvatar()">Salvează outfit</button>
+            <button onclick="resetAvatar()">Resetează avatarul</button>
         </div>
     </div>
 
@@ -125,48 +121,71 @@
 
 @section Scripts {
     <script>
+        const itemPositions = {
+            "tops1": { x: 80, y: 145, w: 250, h: 220 },
+            "tops2": { x: 112, y: 150, w: 180, h: 200 },
+            "tops3": { x: 110, y: 142, w: 175, h: 210 },
+            "tops4": { x: 110, y: 144, w: 177, h: 220 },
+
+            "pants1": { x: 120, y: 290, w: 160, h: 320 },
+            "pants2": { x: 120, y: 290, w: 160, h: 320 },
+            "pants3": { x: 112, y: 265, w: 177, h: 320 },
+            "pants4": { x: 90, y: 260, w: 220, h: 320 },
+
+            "dresses1": { x: 90, y: 150, w: 220, h: 350 },
+            "dresses2": { x: 80, y: 170, w: 240, h: 350 },
+            "dresses3": { x: 60, y: 150, w: 290, h: 400 },
+            "dresses4": { x: 7, y: 122, w: 390, h: 530 },
+
+            "shoes1": { x: 140, y: 600, w: 100, h: 80 },
+            "shoes2": { x: 140, y: 600, w: 100, h: 80 },
+            "shoes3": { x: 152, y: 585, w: 97, h: 80 },
+            "shoes4": { x: 140, y: 600, w: 100, h: 80 },
+
+            "hair1": { x: 112, y: 22, w: 170, h: 235 },
+            "hair2": { x: 136, y: 22, w: 125, h: 180 },
+            "hair3": { x: 136, y: 27, w: 130, h: 145 },
+            "hair4": { x: 133, y: 20, w: 135, h: 175 },
+
+            "accessories1": { x: 230, y: 385, w: 80, h: 120 }, // geanta1
+            "accessories2": { x: 230, y: 385, w: 80, h: 120 }, // geanta2
+            "accessories3": { x: 195, y: 23, w: 50, h: 50 }, // fundita
+            "accessories4": { x: 135, y: 15, w: 140, h: 70 }, // palarie
+        };
+
         let layers = {
-            base: '@Url.Content($"~/images/base{avatarId}.png")',
+            base: { path: '@Url.Content($"~/images/base" + avatarId + ".png")', name: "base" },
             hair: null,
-            top: null,
+            tops: null,
             pants: null,
             dresses: null,
             shoes: null,
             accessories: null
         };
 
-        const Categories = ['base', 'dresses', 'pants', 'tops', 'shoes', 'accessories', 'hair'];
+        const Categories = ['base', 'dresses', 'pants', 'tops', 'shoes', 'hair', 'accessories'];
 
-        function drawAvatar() {//afisare avatar
+        function drawAvatar() {
             const canvas = document.getElementById("avatarCanvas");
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            Categories.forEach(categ => { //pentru fiecare categorie aleg coordonatele de start si dimensiunile
-                if (layers[categ]) {
+            Categories.forEach(categ => {
+                if (layers[categ] && layers[categ].path) {
                     const img = new Image();
-                    img.src = layers[categ];
-                    if(categ == 'base')
-                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    else if(categ == 'dresses')
-                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    else if (categ == 'pants')
-                        img.onload = () => ctx.drawImage(img, 50, 210, canvas.width - 95, canvas.height - 120);
-                    else if (categ == 'tops')
-                        img.onload = () => ctx.drawImage(img, 75, 85, canvas.width - 150, canvas.height / 2);
-                    else if (categ == 'shoes')
-                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    else if (categ == 'accessories')
-                        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    else if(categ == 'hair')
-                        img.onload = () => ctx.drawImage(img, 100, -40, canvas.width/2, canvas.height/2);   
+                    img.src = layers[categ].path;
+                    img.onload = () => {
+                        const imageKey = layers[categ].name;
+                        const pos = itemPositions[imageKey] || { x: 0, y: 0, w: 400, h: 650 };
+                        ctx.drawImage(img, pos.x, pos.y, pos.w, pos.h);
+                    };
                 }
             });
         }
 
         function resetAvatar() {
             layers = {
-                base: '@Url.Content($"~/images/base{avatarId}.png")',
+                base: { path: '@Url.Content($"~/images/base" + avatarId + ".png")', name: "base" },
                 hair: null,
                 tops: null,
                 pants: null,
@@ -177,17 +196,18 @@
             drawAvatar();
         }
 
-        function updateLayer(categ, imagePath) { //actualizare layers la alegerea unui item
-            layers[categ] = imagePath;
-            if (categ == 'dresses') {
-                layers['pants'] = null; // dacă alegi o rochie, elimină pantalonii
-                layers['tops'] = null; // dacă alegi o rochie, elimină topul
+        function updateLayer(categ, imagePath, imageName) {
+            if (categ === "dresses") {
+                layers["tops"] = null;
+                layers["pants"] = null;
             }
-            else if(categ == 'pants')
-                layers['dresses'] = null; // dacă alegi pantaloni, elimină rochia
-            else if (categ == 'tops') 
-                layers['dresses'] = null; // dacă alegi top, elimină rochia
-           
+
+            // Dacă alegi top sau pants => scoate rochia
+            if (categ === "tops" || categ === "pants") {
+                layers["dresses"] = null;
+            }
+
+            layers[categ] = { path: imagePath, name: imageName };
             drawAvatar();
         }
 
@@ -203,12 +223,12 @@
                 const img = document.createElement("img");
                 img.src = imgPath;
                 img.alt = category + i;
-                img.onclick = () => updateLayer(category, imgPath);
+                img.onclick = () => updateLayer(category, imgPath, category + i);
                 wardrobe.appendChild(img);
             }
         }
 
-        function saveAvatar() { //salvare avatar
+        function saveAvatar() {
             const canvas = document.getElementById("avatarCanvas");
             const imageData = canvas.toDataURL("image/png");
 
@@ -226,8 +246,9 @@
                 });
         }
 
-        window.onload = () => { //afisare avatar la incarcarea paginii
-            drawAvatar();
+        window.onload = () => {
+            resetAvatar();
         };
+
     </script>
 }
