@@ -1,173 +1,192 @@
-﻿using System;
-using System.Linq;
+
 using Dress_Up.Data;
 using Dress_Up.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dress_Up.Controllers
+namespace Dress_Up.Controllers;
+
+public class OutfitController(ApplicationDbContext context, UserManager<User> userManager) : Controller
 {
-    public class OutfitController : Controller
+    private readonly ApplicationDbContext db = context;
+    private readonly UserManager<User> _userManager = userManager;
+
+    //vizualizare intgrala a unui outfit
+    [HttpGet]
+    public IActionResult Show(int id)
     {
-        private readonly ApplicationDbContext _context;    
-        private readonly UserManager<User> _userManager;
-
-        public OutfitController(ApplicationDbContext context,
-                                UserManager<User> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
-
-        /*────────── Edit ──────────*/
-        public IActionResult Edit(int id)
-        {
-            var outfit = _context.Outfits.Find(id);
-            return View(outfit);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(int id, Outfit outfit)
-        {
-            if (!ModelState.IsValid) return View(outfit);
-
-            var existing = _context.Outfits
-                                   .Include(o => o.User)
-                                   .FirstOrDefault(o => o.Id == outfit.Id);
-
-            if (existing == null) return NotFound();
-
-            existing.Name = outfit.Name;
-            existing.Description = outfit.Description;
-            existing.IsPublic = outfit.IsPublic;
-
-            _context.SaveChanges();
-            return RedirectToAction("Index", "User", new { id = existing.User.Id });
-        }
-
-        /*────────── Delete ──────────*/
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            var outfit = _context.Outfits.Find(id);
-            var user = _userManager.GetUserAsync(User).Result;
-
-            if (outfit != null)
-            {
-                user.Outfits.Remove(outfit);
-                _context.Outfits.Remove(outfit);
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Index", "User", new { id = user.Id });
-        }
-
-        /*────────── AddComment  ──────────*/
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddComment(int outfitId, string content)
-        {
-            if (string.IsNullOrWhiteSpace(content))
-                return RedirectToAction("HomeGuest", "Home");
-
-            var outfit = _context.Outfits.Find(outfitId);
-            if (outfit == null) return NotFound();
-
-            string userId = User.Identity.IsAuthenticated
-                ? _userManager.GetUserId(User)
-                : null;
-
-            _context.Comments.Add(new Comment
-            {
-                OutfitId = outfitId,
-                UserId = userId,
-                Content = content,
-                Date_created = DateTime.Now,
-                Date_updated = DateTime.Now
-            });
-            _context.SaveChanges();
-
-            return RedirectToAction("HomeGuest", "Home");
-        }
-
-
-        /*────────── Like post  ──────────*/
-
-        [HttpPost("Like/{id}")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Like(int id)
-        {
-            var outfit = _context.Outfits.Find(id);
-            if (outfit == null) return NotFound();
-
-            string userId = User.Identity.IsAuthenticated
-                ? _userManager.GetUserId(User)      // id-ul userului logat
-                : null;                             // guest → null
-
-            bool already = _context.Votes.Any(v =>
-                v.OutfitId == id &&
-                v.EventId == null &&               // like, nu vot 
-                v.UserId == userId);
-
-            if (!already)
-            {
-                _context.Votes.Add(new Vote
-                {
-                    OutfitId = id,
-                    UserId = userId,
-                    EventId = null,              // diferențiator „like”
-                    Date_Voted = DateTime.Now
-                });
-                _context.SaveChanges();
-            }
-
-            var referer = Request.Headers["Referer"].ToString();   // pagina anterioară
-            return !string.IsNullOrWhiteSpace(referer)
-                   ? Redirect(referer)
-                   : RedirectToAction("HomeGuest", "Home");
-        }
-
-        /*────────────────  DELETE COMMENT  ────────────────*/
-        [HttpPost("DeleteComment/{id}")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteComment(int id)
-        {
-            var comment = _context.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
-            if (comment == null) return NotFound();
-
-            bool isOwner = comment.UserId == _userManager.GetUserId(User);
-            bool isAdmin = User.IsInRole("Admin");
-
-            if (!isOwner && !isAdmin) return Forbid();   // 403
-
-            _context.Comments.Remove(comment);
-            _context.SaveChanges();
-
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-        /*────────────────  EDIT COMMENT  (POST) ───────────*/
-        [HttpPost("EditComment")]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditComment(int id, string content)
-        {
-            var comment = _context.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
-            if (comment == null) return NotFound();
-
-            bool isOwner = comment.UserId == _userManager.GetUserId(User);
-            bool isAdmin = User.IsInRole("Admin");
-            if (!isOwner && !isAdmin) return Forbid();
-
-            if (!string.IsNullOrWhiteSpace(content))
-            {
-                comment.Content = content.Trim();
-                comment.Date_updated = DateTime.Now;
-                _context.SaveChanges();
-            }
-
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-
+        var outfit = db.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+        ViewBag.Outfit = outfit;
+        return View();
     }
+
+    // editarea nmelui, descrierii si vizibilitatii unui outfit
+    public ActionResult Edit(int id)
+    {
+        var otd = db.Outfits.Find(id);
+
+        return View(otd);
+    }
+
+    [HttpPost]
+    public ActionResult Edit(int id, Outfit outfit)
+    {
+        if (ModelState.IsValid)
+        {
+            // obtin obiectul din DB
+            var existingOutfit = db.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == outfit.Id);
+
+            //  doar campurile editabile
+            existingOutfit.Name = outfit.Name;
+            existingOutfit.Description = outfit.Description;
+            existingOutfit.IsPublic = outfit.IsPublic;
+
+            db.SaveChanges();
+            return RedirectToAction("Index", "User", new { id = existingOutfit.User.Id });
+        }
+
+        return View(outfit);
+    }
+
+    //stergere outfit
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+        var outfit = db.Outfits.Find(id);
+        var user = _userManager.GetUserAsync(User).Result;
+
+        if (outfit != null)
+        {
+            // sterg toate UserEvents asociate acestui outfit
+            var relatedEvents = db.UserEvents.Where(ue => ue.OutfitId == id).ToList();
+            db.UserEvents.RemoveRange(relatedEvents);
+
+            // sterg toate comentariile asociate acestui outfit
+            var comms = db.Comments.Where(c => c.OutfitId == id).ToList();
+            db.Comments.RemoveRange(comms);
+
+            // sterg toate voturile asociate acestui outfit
+            var votes = db.Votes.Where(v => v.OutfitId == id).ToList();
+            db.Votes.RemoveRange(votes);
+
+            // elimin outfit-ul din lista userului
+            user.Outfits.Remove(outfit);
+
+            // sterg outfitul din baza de date
+            db.Outfits.Remove(outfit);
+
+            db.SaveChanges();
+        }
+
+        return RedirectToAction("Index", "User", new { id = user.Id });
+    }
+
+    /*────────── AddComment  ──────────*/
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult AddComment(int outfitId, string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return RedirectToAction("HomeGuest", "Home");
+
+        var outfit = db.Outfits.Find(outfitId);
+        if (outfit == null) return NotFound();
+
+        string userId = User.Identity.IsAuthenticated
+            ? _userManager.GetUserId(User)
+            : null;
+
+        db.Comments.Add(new Comment
+        {
+            OutfitId = outfitId,
+            UserId = userId,
+            Content = content,
+            Date_created = DateTime.Now,
+            Date_updated = DateTime.Now
+        });
+        db.SaveChanges();
+
+        return RedirectToAction("HomeGuest", "Home");
+    }
+
+
+    /*────────── Like post  ──────────*/
+
+    [HttpPost("Like/{id}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Like(int id)
+    {
+        var outfit = db.Outfits.Find(id);
+        if (outfit == null) return NotFound();
+
+        string userId = User.Identity.IsAuthenticated
+            ? _userManager.GetUserId(User)      // id-ul userului logat
+            : null;                             // guest → null
+
+        bool already = db.Votes.Any(v =>
+            v.OutfitId == id &&
+            v.EventId == null &&               // like, nu vot 
+            v.UserId == userId);
+
+        if (!already)
+        {
+            db.Votes.Add(new Vote
+            {
+                OutfitId = id,
+                UserId = userId,
+                EventId = null,              // diferențiator „like”
+                Date_Voted = DateTime.Now
+            });
+            db.SaveChanges();
+        }
+
+        var referer = Request.Headers["Referer"].ToString();   // pagina anterioară
+        return !string.IsNullOrWhiteSpace(referer)
+               ? Redirect(referer)
+               : RedirectToAction("HomeGuest", "Home");
+    }
+
+    /*────────────────  DELETE COMMENT  ────────────────*/
+    [HttpPost("DeleteComment/{id}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteComment(int id)
+    {
+        var comment = db.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+        if (comment == null) return NotFound();
+
+        bool isOwner = comment.UserId == _userManager.GetUserId(User);
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isOwner && !isAdmin) return Forbid();   // 403
+
+        db.Comments.Remove(comment);
+        db.SaveChanges();
+
+        return Redirect(Request.Headers["Referer"].ToString());
+    }
+
+    /*────────────────  EDIT COMMENT  (POST) ───────────*/
+    [HttpPost("EditComment")]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditComment(int id, string content)
+    {
+        var comment = db.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+        if (comment == null) return NotFound();
+
+        bool isOwner = comment.UserId == _userManager.GetUserId(User);
+        bool isAdmin = User.IsInRole("Admin");
+        if (!isOwner && !isAdmin) return Forbid();
+
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            comment.Content = content.Trim();
+            comment.Date_updated = DateTime.Now;
+            db.SaveChanges();
+        }
+
+        return Redirect(Request.Headers["Referer"].ToString());
+    }
+
+
 }
