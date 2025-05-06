@@ -50,16 +50,27 @@ public class OutfitController(ApplicationDbContext context, UserManager<User> us
 
     //stergere outfit
     [HttpPost]
-    public ActionResult Delete(int id)
+    public IActionResult Delete(int id)
     {
-        var otd = db.Outfits.Find(id);
+        var outfit = db.Outfits.Find(id);
         var user = _userManager.GetUserAsync(User).Result;
-        if (otd != null)
+
+        if (outfit != null)
         {
-            user.Outfits.Remove(otd);
-            db.Outfits.Remove(otd);
+            // sterg toate UserEvents asociate acestui outfit
+            var relatedEvents = db.UserEvents.Where(ue => ue.OutfitId == id).ToList();
+            db.UserEvents.RemoveRange(relatedEvents);
+
+            // elimin outfit-ul din lista userului
+            user.Outfits.Remove(outfit);
+
+            // sterg outfitul din baza de date
+            db.Outfits.Remove(outfit);
+
             db.SaveChanges();
         }
+
         return RedirectToAction("Index", "User", new { id = user.Id });
     }
+
 }
