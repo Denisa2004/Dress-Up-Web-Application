@@ -5,7 +5,7 @@
 <p><strong>Status:</strong> @(Model.IsActive ? "Activ" : "Inactiv")</p>
 <img src="@Model.Image" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
 
-<h4>Participanți:</h4>
+<h4>Participanti:</h4>
 @if (Model.UserEvents.Any())
 {
     <div class="row">
@@ -25,6 +25,6 @@
 else
 {
     <p>Fi primul care se inscrie la acest eveniment.</p>
-    <a href="@Url.Action("Participate", "Event", new { eventId = @Model.Id })" class="btn btn-success" onclick="event.stopPropagation();">Participă</a>
+    <a href="@Url.Action("Participate", "Event", new { eventId = @Model.Id })" class="btn btn-success" onclick="event.stopPropagation();">Participa</a>
 
 }
