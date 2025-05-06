@@ -61,6 +61,14 @@ public class OutfitController(ApplicationDbContext context, UserManager<User> us
             var relatedEvents = db.UserEvents.Where(ue => ue.OutfitId == id).ToList();
             db.UserEvents.RemoveRange(relatedEvents);
 
+            // sterg toate comentariile asociate acestui outfit
+            var comms = db.Comments.Where(c => c.OutfitId == id).ToList();
+            db.Comments.RemoveRange(comms);
+
+            // sterg toate voturile asociate acestui outfit
+            var votes = db.Votes.Where(v => v.OutfitId == id).ToList();
+            db.Votes.RemoveRange(votes);
+
             // elimin outfit-ul din lista userului
             user.Outfits.Remove(outfit);
 
