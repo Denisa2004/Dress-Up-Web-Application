@@ -1,24 +1,26 @@
-﻿
-using Dress_Up.Data;
+﻿using Dress_Up.Data;
 using Dress_Up.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public class OutfitController : Controller
+namespace Dress_Up.Controllers;
+
+public class OutfitController(ApplicationDbContext context, UserManager<User> userManager) : Controller
 {
-    private readonly ApplicationDbContext db;
-    private readonly UserManager<User> _userManager;
-    public OutfitController(
-    ApplicationDbContext context,
-    UserManager<User> userManager
-    )
+    private readonly ApplicationDbContext db = context;
+    private readonly UserManager<User> _userManager = userManager;
+
+    //vizualizare intgrala a unui outfit
+    [HttpGet]
+    public IActionResult Show(int id)
     {
-        db = context;
-        _userManager = userManager;
+        var outfit = db.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+        ViewBag.Outfit = outfit;
+        return View(); 
     }
 
-    // GET: Outfit/Edit
+    // editarea nmelui, descrierii si vizibilitatii unui outfit
     public ActionResult Edit(int id)
     {
         var otd = db.Outfits.Find(id);
@@ -46,17 +48,37 @@ public class OutfitController : Controller
         return View(outfit);
     }
 
+    //stergere outfit
     [HttpPost]
-    public ActionResult Delete(int id)
+    public IActionResult Delete(int id)
     {
-        var otd = db.Outfits.Find(id);
+        var outfit = db.Outfits.Find(id);
         var user = _userManager.GetUserAsync(User).Result;
-        if (otd != null)
+
+        if (outfit != null)
         {
-            user.Outfits.Remove(otd);
-            db.Outfits.Remove(otd);
+            // sterg toate UserEvents asociate acestui outfit
+            var relatedEvents = db.UserEvents.Where(ue => ue.OutfitId == id).ToList();
+            db.UserEvents.RemoveRange(relatedEvents);
+
+            // sterg toate comentariile asociate acestui outfit
+            var comms = db.Comments.Where(c => c.OutfitId == id).ToList();
+            db.Comments.RemoveRange(comms);
+
+            // sterg toate voturile asociate acestui outfit
+            var votes = db.Votes.Where(v => v.OutfitId == id).ToList();
+            db.Votes.RemoveRange(votes);
+
+            // elimin outfit-ul din lista userului
+            user.Outfits.Remove(outfit);
+
+            // sterg outfitul din baza de date
+            db.Outfits.Remove(outfit);
+
             db.SaveChanges();
         }
+
         return RedirectToAction("Index", "User", new { id = user.Id });
     }
+
 }
