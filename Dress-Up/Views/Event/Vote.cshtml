@@ -16,7 +16,6 @@
 }
 else if ((User.IsInRole("User") || User.IsInRole("Admin")) && isParticipating)
 {
-    <!-- Formularul pentru trimiterea votului -->
     <form asp-action="SubmitVote" asp-controller="Event" method="post">
         <input type="hidden" name="eventId" value="@Model.Id" />
 

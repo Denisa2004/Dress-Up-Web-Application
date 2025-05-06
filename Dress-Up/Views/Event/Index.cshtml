@@ -4,7 +4,7 @@
     ViewBag.Title = "Evenimente";
     var evenimente = Model;
     var evenimenteActive = evenimente.Where(e => e.IsActive).ToList();
-    var evenimenteInactive = evenimente.Where(e => !e.IsActive).ToList(); // Evenimente inactive
+    var evenimenteInactive = evenimente.Where(e => !e.IsActive).ToList(); 
 }
 
 <!-- Evenimente Active -->

@@ -16,7 +16,6 @@ public class EventController : Controller
         db = context;
     }
 
-    // Afișează toate evenimentele (active + inactive)
     [HttpGet]
     public async Task<IActionResult> Index()
     {
@@ -28,7 +27,6 @@ public class EventController : Controller
         return View(events);
     }
 
-    // Afișează detalii pentru un eveniment
     [HttpGet("show/{id}")]
     public async Task<IActionResult> Show(int id)
     {
@@ -133,7 +131,8 @@ public class EventController : Controller
         return RedirectToAction("Index");
     }
 
-    // GET: Participare la concurs (alege un outfit)
+
+
     [HttpGet("participate/{eventId}")]
     [Authorize]
     public async Task<IActionResult> Participate(int eventId)
@@ -153,7 +152,8 @@ public class EventController : Controller
         return View(user.Outfits.ToList());
     }
 
-    // POST: Participare cu outfit
+
+
     [HttpPost("participate/{eventId}")]
     [Authorize]
     [ValidateAntiForgeryToken]
@@ -188,6 +188,8 @@ public class EventController : Controller
 
         return RedirectToAction("Index", "Event");
     }
+
+
     [HttpGet("vote/{eventId}")]
     [Authorize]
     public async Task<IActionResult> Vote(int eventId)
@@ -208,10 +210,8 @@ public class EventController : Controller
         if (user == null)
             return Unauthorized();
 
-        // Poți adăuga aici o verificare dacă a votat deja, dacă vrei
-
         ViewBag.EventId = eventId;
-        return View("Vote", ev);  // ✅ Corect: trimiți modelul de tip Event către view-ul Vote.cshtml
+        return View("Vote", ev);  
     }
 
 
