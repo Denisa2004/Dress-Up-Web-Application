@@ -2,6 +2,7 @@
 using Dress_Up.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Dress_Up.Controllers;
@@ -37,18 +38,31 @@ public class UserController : Controller
         {
             var UserOutfits = _context.Outfits.Where(u => u.User.Id == id);
             ViewBag.UserOutfits = UserOutfits;
-
+            ViewBag.AfisareButoane = true; //pentru a sti daca afisez butoanele de editare sau nu
             return View(user);
         }
         else
         {
             var UserOutfits = _context.Outfits.Where(u => u.User.Id == id && u.IsPublic == true);
             ViewBag.UserOutfits = UserOutfits;
+            ViewBag.AfisareButoane = false;
 
             return View(user);
         }
-
-
-
+    }
+    public IActionResult PublicaOutfit(int id)
+    {
+        var outfit = _context.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+        if (outfit != null)
+        {
+            outfit.IsPublic = true;
+            _context.SaveChanges();
+            TempData["message"] = "Outfit-ul a fost publicat cu succes!";
+        }
+        else
+        {
+            TempData["message"] = "Outfit-ul nu a fost gasit!";
+        }
+        return Redirect("/User/Index/" + outfit!.User!.Id);
     }
 }
