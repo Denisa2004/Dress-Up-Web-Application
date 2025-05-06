@@ -45,7 +45,6 @@ public class EventController : Controller
         return View(ev);
     }
 
-    // GET: Creare nou concurs
     [HttpGet("new")]
     [Authorize(Roles = "Admin")]
     public IActionResult New()
@@ -53,7 +52,6 @@ public class EventController : Controller
         return View();
     }
 
-    // POST: Creare nou concurs
     [HttpPost("new")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
@@ -70,7 +68,6 @@ public class EventController : Controller
         return View(ev);
     }
 
-    // POST: Oprește un concurs
     [HttpPost("stop/{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Stop(int id)
@@ -99,7 +96,7 @@ public class EventController : Controller
 
         ev.Description = castigator != null
             ? $"Castigatorul este: {castigator.OutfitName}"
-            : "Nu există câștigător.";
+            : "Nu există castigator.";
 
         await db.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
@@ -168,13 +165,23 @@ public class EventController : Controller
             .FirstOrDefaultAsync(o => o.Id == outfitId && o.User.Id == user.Id);
 
         if (outfit == null)
-            return BadRequest("Outfit invalid");
+        {
+            TempData["message"] = "Outfit invalid";
+            TempData["messageType"] = "alert-danger";
+            return RedirectToAction("Participate", new { eventId });
+        }
+            
 
         bool alreadyJoined = await db.UserEvents
             .AnyAsync(ue => ue.UserId == user.Id && ue.EventId == eventId);
 
         if (alreadyJoined)
-            return BadRequest("Poți participa cu un singur outfit la un eveniment.");
+        {
+            TempData["message"] = "Poti participa cu un singur outfit la eveniment";
+            TempData["messageType"] = "alert-danger";
+            return RedirectToAction("Participate", new { eventId });
+        }
+            
 
         var userEvent = new UserEvent
         {
@@ -215,7 +222,6 @@ public class EventController : Controller
     }
 
 
-    // GET: Votează un outfit
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> SubmitVote(int eventId, int outfitId)
@@ -238,7 +244,8 @@ public class EventController : Controller
 
         if (alreadyVoted)
         {
-            TempData["Error"] = "Ai votat deja în acest concurs.";
+            TempData["message"] = "Fiecare participant poate vota o singura data.";
+            TempData["messageType"] = "alert-danger";
             return RedirectToAction("Vote", new { eventId });
         }
 

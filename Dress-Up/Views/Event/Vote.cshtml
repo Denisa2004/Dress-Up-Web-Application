@@ -1,17 +1,24 @@
 ﻿@model Dress_Up.Models.Event
 
 @{
-    ViewData["Title"] = "Votează Outfituri";
+    ViewData["Title"] = "Voteaza Outfituri";
     var currentUserId = User.Identity.Name;
     bool isParticipating = Model.UserEvents.Any(ue => ue.User.UserName == currentUserId);
 }
 
-<h2 class="text-center mb-4">Votează Outfitul Preferat</h2>
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]" role="alert">
+        @TempData["message"]
+    </div>
+}
+
+<h2 class="text-center mb-4">Voteaza Outfitul Preferat</h2>
 
 @if (!Model.UserEvents.Any())
 {
     <div class="alert alert-warning text-center">
-        Nu există participanți înscriși la acest concurs... încă.
+        Nu exista participanti inscrisi la acest concurs... inca.
     </div>
 }
 else if ((User.IsInRole("User") || User.IsInRole("Admin")) && isParticipating)
@@ -31,7 +38,7 @@ else if ((User.IsInRole("User") || User.IsInRole("Admin")) && isParticipating)
                         </div>
                         <div class="card-footer text-center">
                             <input type="radio" name="outfitId" value="@ue.Outfit.Id" id="outfit_@ue.Outfit.Id" class="form-check-input me-2" />
-                            <label for="outfit_@ue.Outfit.Id">Votează</label>
+                            <label for="outfit_@ue.Outfit.Id">Voteaza</label>
                         </div>
                     </div>
                 </div>
@@ -46,6 +53,6 @@ else if ((User.IsInRole("User") || User.IsInRole("Admin")) && isParticipating)
 else
 {
     <div class="alert alert-info text-center">
-        Trebuie să participi la concurs pentru a putea vota.
+        Trebuie sa participi la concurs pentru a putea vota.
     </div>
 }
