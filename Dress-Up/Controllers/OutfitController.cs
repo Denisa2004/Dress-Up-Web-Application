@@ -127,5 +127,47 @@ namespace Dress_Up.Controllers
                    : RedirectToAction("HomeGuest", "Home");
         }
 
+        /*────────────────  DELETE COMMENT  ────────────────*/
+        [HttpPost("DeleteComment/{id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteComment(int id)
+        {
+            var comment = _context.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+            if (comment == null) return NotFound();
+
+            bool isOwner = comment.UserId == _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!isOwner && !isAdmin) return Forbid();   // 403
+
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        /*────────────────  EDIT COMMENT  (POST) ───────────*/
+        [HttpPost("EditComment")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditComment(int id, string content)
+        {
+            var comment = _context.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+            if (comment == null) return NotFound();
+
+            bool isOwner = comment.UserId == _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+            if (!isOwner && !isAdmin) return Forbid();
+
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                comment.Content = content.Trim();
+                comment.Date_updated = DateTime.Now;
+                _context.SaveChanges();
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+
     }
 }

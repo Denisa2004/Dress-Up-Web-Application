@@ -1,21 +1,23 @@
 ﻿@model IEnumerable<Dress_Up.Models.Outfit>
+@using Dress_Up.Models
+@inject Microsoft.AspNetCore.Identity.UserManager<User> UserManager
 
 @Html.Partial("_MenuG")
-<h2 class="title">News‑Feed Outfits</h2>
+
+<h2 class="title">News‑Feed Outfits</h2>
 
 <div class="grid">
     @foreach (var outfit in Model)
     {
         var likeCount = outfit.Votes.Where(v => v.EventId == null).Count();
-            <!-- ★ -->
 
         <div class="card">
             <img src="@outfit.Image" class="card-img" />
 
             <div class="card-body">
                 <h4>@outfit.Name</h4>
-                <p>@outfit.Description</p>
-                <small>
+                <p class="descr">@outfit.Description</p>
+                <small class="meta">
                     by <strong>@outfit.User?.UserName</strong> |
                     @outfit.Date_added.ToString("dd MMM yyyy HH:mm")
                 </small>
@@ -25,25 +27,53 @@
             <form asp-controller="Outfit" asp-action="Like" asp-route-id="@outfit.Id"
                   method="post" class="actions">
                 @Html.AntiForgeryToken()
-                <button class="btn-like" type="submit">❤ Like (@likeCount)</button>
+                <button class="btn-like" type="submit">
+                    ❤ Like (<span>@likeCount</span>)
+                </button>
             </form>
 
-            <!-- COMENTARII (identic cu varianta precedentă) -->
-            <details open class="comments">
-                <summary>💬 Comments (@((outfit.Comments?.Count() ?? 0)))</summary>
+            <!-- COMMENTS -->
+            <details class="comments" open>
+                <summary>💬 Comments (@(outfit.Comments?.Count() ?? 0))</summary>
 
                 @foreach (var c in outfit.Comments.OrderByDescending(c => c.Date_created))
                 {
+                    var canManage = User.Identity.IsAuthenticated &&
+                    (c.UserId == UserManager.GetUserId(User) || User.IsInRole("Admin"));
+
                     <div class="comment">
-                        <strong>@(c.User?.UserName ?? "Guest"):</strong> @c.Content
+                        <strong>@(c.User?.UserName ?? "Guest"):</strong>
+                        <span id="c-text-@c.Id">@c.Content</span>
                         <small>@c.Date_created.ToString("dd.MM.yyyy HH:mm")</small>
+
+                        @if (canManage)
+                        {
+                            <div class="c-actions">
+                                <form asp-controller="Outfit"
+                                      asp-action="DeleteComment"
+                                      asp-route-id="@c.Id"
+                                      method="post" style="display:inline">
+                                    @Html.AntiForgeryToken()
+                                    <button class="mini-btn" title="Delete">🗑</button>
+                                </form>
+
+                                <button class="mini-btn"
+                                        title="Edit"
+                                        onclick="beginEdit(@c.Id, '@c.Content.Replace("'", "\\'")')">
+                                    ✏
+                                </button>
+                            </div>
+                        }
                     </div>
                 }
 
-                <form asp-controller="Outfit" asp-action="AddComment" method="post" class="comment-form">
+                <form asp-controller="Outfit" asp-action="AddComment"
+                      method="post" class="comment-form">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="outfitId" value="@outfit.Id" />
-                    <textarea name="content" placeholder="Add a comment…" required></textarea>
+                    <textarea name="content"
+                              placeholder="Add a comment…"
+                              required></textarea>
                     <button type="submit">Post</button>
                 </form>
             </details>
@@ -51,9 +81,29 @@
     }
 </div>
 
+<!-- formular invizibil pentru edit -->
+<form id="editForm"
+      asp-controller="Outfit" asp-action="EditComment"
+      method="post" style="display:none">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="editId" />
+    <textarea name="content" id="editContent"></textarea>
+</form>
+
+@section Scripts {
+    <script>
+        function beginEdit(id, content) {
+            const txt = prompt("Edit comment:", content);
+            if (txt === null) return;
+            document.getElementById("editId").value = id;
+            document.getElementById("editContent").value = txt;
+            document.getElementById("editForm").submit();
+        }
+    </script>
+}
 
 <style>
-    /* spaţiu pentru meniul fix din colţ */
+    /* ---- layout general ---- */
     body {
         margin: 80px 0 0;
         font-family: Arial,Helvetica,sans-serif;
@@ -65,20 +115,20 @@
         margin: 0 0 24px;
         color: #333;
         font-size: 1.9rem;
-        font-weight: 700;
+        font-weight: 700
     }
 
-    /* —— GRILĂ —— */
+    /* ---- grid ---- */
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); /* 3‑4 pe rând */
+        grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
         gap: 24px;
         padding: 0 24px 48px;
-        max-width: 1600px; /* nu lăsăm card‑urile să se întindă pe tot ecranul ultra‑wide */
-        margin: auto;
+        max-width: 1600px;
+        margin: auto
     }
 
-    /* —— CARD —— */
+    /* ---- card ---- */
     .card {
         background: #fff;
         border-radius: 14px;
@@ -86,86 +136,75 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        transition: transform .15s ease, box-shadow .15s ease;
+        transition: transform .15s,box-shadow .15s
     }
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 6px 14px rgba(0,0,0,.12);
+            box-shadow: 0 6px 14px rgba(0,0,0,.12)
         }
 
     .card-img {
         width: 100%;
-        height: auto; /* lasă browser‑ul să calculeze */
+        height: auto;
         object-fit: contain;
-        background: #fff;
+        background: #fff
     }
 
     .card-body {
-        padding: 14px 16px 12px;
+        padding: 14px 16px 8px;
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 8px
     }
 
         .card-body h4 {
             margin: 0;
             font-size: 1.05rem;
-            color: #f14f86;
+            color: #f14f86
         }
 
-        .card-body p {
-            margin: 0;
-            line-height: 1.3;
-            color: #555;
-            font-size: .9rem;
-            min-height: 36px;
-        }
-
-        .card-body small {
-            color: #888;
-            font-size: .75rem
-        }
-
-    /* —— ACŢIUNI —— */
-    .actions {
-        display: flex;
-        gap: 8px;
-        padding: 10px 12px 14px;
-        justify-content: center;
+    .descr {
+        margin: 0;
+        line-height: 1.3;
+        color: #555;
+        font-size: .9rem;
+        min-height: 36px
     }
 
-    .btn-like, .btn-comm {
+    .meta {
+        color: #888;
+        font-size: .75rem
+    }
+
+    /* ---- like button ---- */
+    .actions {
+        display: flex;
+        justify-content: center;
+        padding: 10px 12px 14px
+    }
+
+    .btn-like {
         flex: 1;
         padding: 6px 0;
         border: none;
         border-radius: 18px;
+        background: #f7b1c1;
+        color: #fff;
         font-size: .8rem;
         cursor: pointer;
-        transition: all .2s;
-    }
-
-    .btn-like {
-        background: #f7b1c1;
-        color: #fff
+        transition: background .2s;
+        box-shadow: 0 2px 4px rgba(241,79,134,.25)
     }
 
         .btn-like:hover {
             background: #f14f86
         }
 
-    .btn-comm {
-        background: #e0e0e0;
-        color: #333
-    }
-
-        .btn-comm:hover {
-            background: #d5d5d5
-        }
-
+    /* ---- comments ---- */
     details.comments {
-        padding: 0 14px 14px;
+        padding: 0 14px 14px
     }
 
     details summary {
@@ -174,11 +213,11 @@
         margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 6px
     }
 
         details summary::marker {
-            color: #f14f86;
+            color: #f14f86
         }
 
     .comment {
@@ -188,25 +227,45 @@
         padding: 8px 12px;
         margin-bottom: 8px;
         font-size: .85rem;
-        line-height: 1.25;
+        line-height: 1.25
     }
 
         .comment strong {
-            color: #d64577;
+            color: #d64577
         }
 
         .comment small {
             display: block;
             color: #999;
             font-size: .72rem;
-            margin-top: 3px;
+            margin-top: 3px
         }
 
+    .c-actions {
+        display: inline-flex;
+        gap: 4px;
+        margin-left: 6px
+    }
+
+    .mini-btn {
+        background: #eee;
+        border: none;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: .75rem;
+        cursor: pointer
+    }
+
+        .mini-btn:hover {
+            background: #dcdcdc
+        }
+
+    /* ---- comment form ---- */
     .comment-form {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        margin-top: 8px;
+        margin-top: 8px
     }
 
         .comment-form textarea {
@@ -217,7 +276,7 @@
             border-radius: 10px;
             padding: 8px 10px;
             font-family: inherit;
-            font-size: .85rem;
+            font-size: .85rem
         }
 
         .comment-form button {
@@ -230,20 +289,15 @@
             font-size: .85rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background .15s, transform .15s;
+            transition: background .15s,transform .15s
         }
 
             .comment-form button:hover {
                 background: #f14f86;
-                transform: translateY(-1px);
+                transform: translateY(-1px)
             }
 
             .comment-form button:active {
-                transform: translateY(0);
+                transform: translateY(0)
             }
-
-    .btn-like {
-        box-shadow: 0 2px 4px rgba(241,79,134,.25);
-    }
-
 </style>
