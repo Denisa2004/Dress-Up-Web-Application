@@ -4,48 +4,184 @@
     ViewData["Title"] = "Profilul Meu";
 }
 
-<div >
-<h2>@Model.UserName</h2>
+<style>
+    /* Fonturi și culori de fundal mai feminine */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f1f8; /* Fundal roz palid */
+        color: #333; /* Text închis pentru contrast */
+    }
 
-@if (ViewBag.AfisareButoane) //editare profil doar daca e contul propriu sau e admin
-{
-    <div class="text-end">
-        <a href="@Url.Action("Edit", "User", new { id = @Model.Id })" class="btn btn-danger">Edit Profile</a>
+    /* Stiluri pentru chenarul de profil */
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        /* Imaginea de profil rotundă */
+        .card img {
+            border-radius: 50%;
+        }
+
+    /* Butonul de editare profil */
+    .btn-danger {
+        background-color: #e91e63; /* Nuanța de roz */
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .btn-danger:hover {
+            background-color: #d81b60; /* Culoare mai închisă la hover */
+        }
+
+    /* Stiluri pentru textul despre utilizator */
+    .card-body h4, .card-body p {
+        font-family: 'Georgia', serif;
+        color: #e91e63; /* Nuanța de roz pentru titluri și detalii */
+    }
+
+    /* Stiluri pentru imaginea outfits */
+    .d-flex img {
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .d-flex img:hover {
+            transform: scale(1.05); /* Zoom pe imagine la hover */
+        }
+
+    /* Înlocuiește textul de tip p pentru informațiile despre utilizator */
+    .card-body p i {
+        color: #e91e63;
+    }
+
+    /* Modalul confirmării */
+    .modal-content {
+        background-color: #fce4ec;
+    }
+
+    .modal-header {
+        background-color: #e91e63;
+        color: white;
+    }
+
+    .modal-footer button {
+        background-color: #e91e63;
+        color: white;
+        border-radius: 5px;
+    }
+
+        .modal-footer button:hover {
+            background-color: #d81b60;
+        }
+
+    /* Adăugarea unui border roz sub titluri */
+    h3 {
+        border-bottom: 3px solid #e91e63;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* Fundal personalizat pentru carduri și detalii */
+    .card-body {
+        background-color: #ffffff;
+        padding: 20px;
+    }
+</style>
+
+
+<!-- CHENAR PROFIL (mai îngust) -->
+<div class="row justify-content-center">
+    <div class="col-4 mb-4">
+        <!-- Aici am schimbat la col-4 -->
+        <div class="card">
+            <div class="card-body d-flex justify-content-between flex-column">
+                <div>
+                    <p><i class="bi bi-person"></i> User name: @Model.UserName</p>
+
+                    @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                    {
+                        <img src="@Model.ProfilePictureUrl" alt="Profile Picture" style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/150" alt="Default Profile Picture" style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
+                    }
+
+                    <h4 class="mt-3">@Model.FirstName @Model.LastName</h4>
+
+                    @if (!string.IsNullOrEmpty(Model.About))
+                    {
+                        <p><i class="bi bi-info-circle"></i> About: @Model.About</p>
+                    }
+                </div>
+
+                @if (ViewBag.AfisareButoane)
+                {
+                    <div class="text-end mt-3">
+                        <a href="@Url.Action("Edit", "User", new { id = @Model.Id })" class="btn btn-danger">Edit Profile</a>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-}
-    
 </div>
 
-<h3>My Saved Outfits</h3>
+<!-- OUTFITS SUB PROFIL -->
+<div class="row">
+    <div class="col-12">
+        <h3 class="mt-4">My Saved Outfits</h3>
 
-@if (ViewBag.UserOutfits != null)
-{
-    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
-        @foreach (var outfit in ViewBag.UserOutfits) //afisarea outfit urilor salvate ale userului in functie de vizibilitate(vizibilitate verificata in Controller)
+        @if (ViewBag.UserOutfits != null)
         {
-            <div style="text-align: center;">
-                @* buton de afisare integrala a outfitului *@
-                <a href="@Url.Action("Show", "Outfit", new { id = outfit.Id })">
-                    <img src="@outfit.Image" alt="@outfit.Name" width="200" style="border-radius: 12px;" /> 
-                </a>
-                <p>@outfit.Name</p>
-                <p><small>@outfit.Date_added.ToShortDateString()</small></p>
-                <p><small>@outfit.Description</small></p>
-                @if (ViewBag.AfisareButoane) //afisez butoanele de edit doar daca userul e pe propriul cont sau daca e admin
+            <div class="d-flex flex-wrap gap-4">
+                @foreach (var outfit in ViewBag.UserOutfits)
                 {
-                    <form asp-action="Delete" asp-controller="Outfit" asp-route-id="@outfit.Id" method="post" class="mt-2" onsubmit="return confirm('Are you sure you want to delete this outfit??');">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                    <p> <a href="@Url.Action("Edit", "Outfit", new { id = outfit.Id })">Edit</a></p>
-                    <p> <a href="@Url.Action("PublicaOutfit", "User", new { id = outfit.Id })">Public</a></p>
+                    <div style="text-align: center;">
+                        <img src="@outfit.Image" alt="@outfit.Name" width="200" style="border-radius: 12px;" />
+                        <p>@outfit.Name</p>
+                        <p><small>@outfit.Date_added.ToShortDateString()</small></p>
+                        <p><small>@outfit.Description</small></p>
+
+                        @if (ViewBag.AfisareButoane)
+                        {
+                            <p><a href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@outfit.Id" id="delUser">Delete</a></p>
+                            <p><a href="@Url.Action("Edit", "Outfit", new { id = outfit.Id })">Edit</a></p>
+
+                            <div class="modal fade" id="confirmDeleteModal-@outfit.Id" tabindex="-1" aria-labelledby="confirmDeleteLabel-@outfit.Id" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteLabel-@outfit.Id">Confirm</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete this outfit?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">No</button>
+                                            <form id="deleteForm" action="@Url.Action("Delete", "Outfit", new { id = outfit.Id })" method="post">
+                                                <button type="submit" class="btn btn-danger">Yes</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 }
-                
             </div>
-            
+        }
+        else
+        {
+            <p>Nu ai salvat niciun outfit încă.</p>
         }
     </div>
-}
-else
-{
-    <p>Nu ai salvat niciun outfit încă.</p>
-}
+</div>

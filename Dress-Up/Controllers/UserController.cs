@@ -1,8 +1,8 @@
 ﻿using Dress_Up.Data;
 using Dress_Up.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Dress_Up.Controllers;
@@ -49,20 +49,67 @@ public class UserController : Controller
 
             return View(user);
         }
+
+
     }
-    public IActionResult PublicaOutfit(int id)
+
+    [HttpGet]
+   /* [Authorize(Roles = "Admin,User")]*/
+    public async Task<IActionResult> Edit()
     {
-        var outfit = _context.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
-        if (outfit != null)
+        var userId = _userManager.GetUserId(User);
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
         {
-            outfit.IsPublic = true;
-            _context.SaveChanges();
-            TempData["message"] = "Outfit-ul a fost publicat cu succes!";
+            return NotFound();
         }
-        else
-        {
-            TempData["message"] = "Outfit-ul nu a fost gasit!";
-        }
-        return Redirect("/User/Index/" + outfit!.User!.Id);
+
+        return View(user);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Route("User/Edit")]
+    public async Task<IActionResult> Edit(User model)
+    {
+        Console.WriteLine("MODEL ID: " + model.Id);
+
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.About = model.About;
+            user.ProfilePictureUrl = model.ProfilePictureUrl;
+
+            // Actualizează utilizatorul în baza de date
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "User", new { id = user.Id });
+
+
+            }
+
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+        }
+
+        return View(model);
+    }
+
 }

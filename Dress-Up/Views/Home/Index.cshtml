@@ -1,8 +1,152 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dress to Impress";
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home-container">
+    <div class="welcome-section">
+        <h1>DRESS UP</h1>
+        <link rel="stylesheet" href="~/css/home.css" />
+        <script src="~/js/home.js"></script>
+
+        <div class="button-group">
+            <a asp-page="/Guest" class="btn guest">Guest</a>
+            <a href="/Identity/Account/Login" class="btn login">Login</a>
+            <a href="/Identity/Account/Register" class="btn register">Register</a>
+        </div>
+
+
+    </div>
 </div>
+
+
+@* <style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: url('/Images/home_background.png') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    /* Containerul principal */
+    .home-container {
+        text-align: left;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        width: 80%;
+        max-width: 900px;
+        position: relative;
+    }
+
+    /* Titlul cu efect de sclipici */
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    h1 span.shine {
+        color: #ff4081;
+        position: relative;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: inline-block;
+        animation: shine 1s infinite linear;
+    }
+
+    &#64;keyframes sparkle {
+        0% {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1);
+        }
+        50% {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1.2);
+            opacity: 1;  /* La mijloc, sclipiciul devine mai luminos */
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1);
+            opacity: 0.4;  /* Revine la opacitatea inițială */
+        }
+    }
+
+    /* Subtitlu */
+    p {
+        font-size: 1.5rem;
+        color: #666;
+        margin-bottom: 40px;
+    }
+
+    /* Gruparea butoanelor pe stânga */
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    /* Butoane */
+    .btn {
+        text-decoration: none;
+        padding: 15px 30px;
+        font-size: 1.3rem;
+        border-radius: 50px;
+        transition: all 0.4s ease;
+        color: white;
+        font-weight: bold;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Butoane cu efecte de sclipici */
+    .login {
+        background: linear-gradient(45deg, #536dfe, #3d5afe);
+    }
+
+    .register {
+        background: linear-gradient(45deg, #00e5ff, #00b8d4);
+    }
+
+    .guest {
+        background: linear-gradient(45deg, #ff4081, #f50057);
+    }
+
+    /* Efectul de sclipici pe butoane */
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: #ff4081;
+        opacity: 0.2;
+        transform: translate(-50%, -50%) rotate(45deg);
+        animation: sparkle 1s infinite linear;
+    }
+
+    &#64;keyframes sparkle {
+        0% {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1);
+        }
+        50% {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1.1);
+        }
+        100% {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1);
+        }
+    }
+
+    /* Hover efecte pe butoane */
+    .btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+
+</style> *@
