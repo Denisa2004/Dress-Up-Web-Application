@@ -22,7 +22,10 @@ else
                 <h4>@outfit.Name</h4>
                 <p class="descr">@outfit.Description</p>
                 <small class="meta">
-                    by <strong>@outfit.User?.UserName</strong> |
+                    by <a href="@Url.Action("Index", "User", new { id = outfit.User?.Id })">
+                        <strong>@outfit.User?.UserName</strong>
+                    </a>
+
                     @outfit.Date_added.ToString("dd MMM yyyy HH:mm")
                 </small>
             </div>
