@@ -1,4 +1,5 @@
-﻿using Dress_Up.Data;
+
+using Dress_Up.Data;
 using Dress_Up.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class OutfitController(ApplicationDbContext context, UserManager<User> us
     {
         var outfit = db.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
         ViewBag.Outfit = outfit;
-        return View(); 
+        return View();
     }
 
     // editarea nmelui, descrierii si vizibilitatii unui outfit
@@ -80,5 +81,112 @@ public class OutfitController(ApplicationDbContext context, UserManager<User> us
 
         return RedirectToAction("Index", "User", new { id = user.Id });
     }
+
+    /*────────── AddComment  ──────────*/
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult AddComment(int outfitId, string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return RedirectToAction("HomeGuest", "Home");
+
+        var outfit = db.Outfits.Find(outfitId);
+        if (outfit == null) return NotFound();
+
+        string userId = User.Identity.IsAuthenticated
+            ? _userManager.GetUserId(User)
+            : null;
+
+        db.Comments.Add(new Comment
+        {
+            OutfitId = outfitId,
+            UserId = userId,
+            Content = content,
+            Date_created = DateTime.Now,
+            Date_updated = DateTime.Now
+        });
+        db.SaveChanges();
+
+        return RedirectToAction("HomeGuest", "Home");
+    }
+
+
+    /*────────── Like post  ──────────*/
+
+    [HttpPost("Like/{id}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Like(int id)
+    {
+        var outfit = db.Outfits.Find(id);
+        if (outfit == null) return NotFound();
+
+        string userId = User.Identity.IsAuthenticated
+            ? _userManager.GetUserId(User)      // id-ul userului logat
+            : null;                             // guest → null
+
+        bool already = db.Votes.Any(v =>
+            v.OutfitId == id &&
+            v.EventId == null &&               // like, nu vot 
+            v.UserId == userId);
+
+        if (!already)
+        {
+            db.Votes.Add(new Vote
+            {
+                OutfitId = id,
+                UserId = userId,
+                EventId = null,              // diferențiator „like”
+                Date_Voted = DateTime.Now
+            });
+            db.SaveChanges();
+        }
+
+        var referer = Request.Headers["Referer"].ToString();   // pagina anterioară
+        return !string.IsNullOrWhiteSpace(referer)
+               ? Redirect(referer)
+               : RedirectToAction("HomeGuest", "Home");
+    }
+
+    /*────────────────  DELETE COMMENT  ────────────────*/
+    [HttpPost("DeleteComment/{id}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteComment(int id)
+    {
+        var comment = db.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+        if (comment == null) return NotFound();
+
+        bool isOwner = comment.UserId == _userManager.GetUserId(User);
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isOwner && !isAdmin) return Forbid();   // 403
+
+        db.Comments.Remove(comment);
+        db.SaveChanges();
+
+        return Redirect(Request.Headers["Referer"].ToString());
+    }
+
+    /*────────────────  EDIT COMMENT  (POST) ───────────*/
+    [HttpPost("EditComment")]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditComment(int id, string content)
+    {
+        var comment = db.Comments.Include(c => c.User).FirstOrDefault(c => c.Id == id);
+        if (comment == null) return NotFound();
+
+        bool isOwner = comment.UserId == _userManager.GetUserId(User);
+        bool isAdmin = User.IsInRole("Admin");
+        if (!isOwner && !isAdmin) return Forbid();
+
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            comment.Content = content.Trim();
+            comment.Date_updated = DateTime.Now;
+            db.SaveChanges();
+        }
+
+        return Redirect(Request.Headers["Referer"].ToString());
+    }
+
 
 }
