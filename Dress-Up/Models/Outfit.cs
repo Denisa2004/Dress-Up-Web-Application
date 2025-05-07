@@ -12,5 +12,8 @@ namespace Dress_Up.Models
         public DateTime Date_added { get; set; } = DateTime.Now;
         public string? Image { get; set; }
         public bool IsPublic { get; set; }
+
+        public ICollection<Vote> Votes { get; set; } = new List<Vote>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }
