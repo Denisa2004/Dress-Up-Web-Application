@@ -53,8 +53,12 @@ public class OutfitController(ApplicationDbContext context, UserManager<User> us
     [HttpPost]
     public IActionResult Delete(int id)
     {
-        var outfit = db.Outfits.Find(id);
-        var user = _userManager.GetUserAsync(User).Result;
+        var outfit = db.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+        if (outfit == null) 
+            return NotFound();
+
+        var user = outfit.User;
+
 
         if (outfit != null)
         {
