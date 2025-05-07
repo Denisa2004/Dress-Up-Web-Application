@@ -117,31 +117,36 @@ public class OutfitController(ApplicationDbContext context, UserManager<User> us
     [ValidateAntiForgeryToken]
     public IActionResult Like(int id)
     {
+        if (!User.Identity.IsAuthenticated)
+            return Unauthorized(); // Blochează like‑ul pentru guest
+
         var outfit = db.Outfits.Find(id);
         if (outfit == null) return NotFound();
 
-        string userId = User.Identity.IsAuthenticated
-            ? _userManager.GetUserId(User)      // id-ul userului logat
-            : null;                             // guest → null
+        string userId = _userManager.GetUserId(User);
 
-        bool already = db.Votes.Any(v =>
+        var existingLike = db.Votes.FirstOrDefault(v =>
             v.OutfitId == id &&
-            v.EventId == null &&               // like, nu vot 
+            v.EventId == null &&
             v.UserId == userId);
 
-        if (!already)
+        if (existingLike != null)
+        {
+            db.Votes.Remove(existingLike);
+        }
+        else
         {
             db.Votes.Add(new Vote
             {
                 OutfitId = id,
                 UserId = userId,
-                EventId = null,              // diferențiator „like”
+                EventId = null,
                 Date_Voted = DateTime.Now
             });
-            db.SaveChanges();
         }
+        db.SaveChanges();
 
-        var referer = Request.Headers["Referer"].ToString();   // pagina anterioară
+        var referer = Request.Headers["Referer"].ToString();
         return !string.IsNullOrWhiteSpace(referer)
                ? Redirect(referer)
                : RedirectToAction("HomeGuest", "Home");

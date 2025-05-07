@@ -4,20 +4,23 @@ using Dress_Up.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dress_Up.Data.Migrations
+namespace Dress_Up.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507111538_FinalMigration")]
+    partial class FinalMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -174,6 +177,9 @@ namespace Dress_Up.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("About")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
@@ -190,6 +196,12 @@ namespace Dress_Up.Data.Migrations
 
                     b.Property<int?>("EventId")
                         .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -213,6 +225,9 @@ namespace Dress_Up.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -443,13 +458,13 @@ namespace Dress_Up.Data.Migrations
             modelBuilder.Entity("Dress_Up.Models.Comment", b =>
                 {
                     b.HasOne("Dress_Up.Models.Outfit", "Outfit")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("OutfitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Dress_Up.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -510,7 +525,7 @@ namespace Dress_Up.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Dress_Up.Models.Outfit", "Outfit")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("OutfitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -591,10 +606,16 @@ namespace Dress_Up.Data.Migrations
             modelBuilder.Entity("Dress_Up.Models.Outfit", b =>
                 {
                     b.Navigation("Clothes");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("Dress_Up.Models.User", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Outfits");
 
                     b.Navigation("UserEvents");

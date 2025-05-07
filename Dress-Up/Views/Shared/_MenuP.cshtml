@@ -11,13 +11,26 @@
     var uid = UserManager.GetUserId(User);
 }
 
-<div class="menu">
+@* <div class="menu">
     <a href="@Url.Action("Index","Avatar")" class="menu-button">Create Outfit</a>
     <a href="@Url.Action("Index","User", new { id = uid})" class="menu-button">My Profile</a>
     <a href="@Url.Action("Index","Event")" class="menu-button">Join Event</a>
     <a href="@Url.Action("HomeGuest","Home")" class="menu-button">Feed</a>
     <a href="@Url.Action("Index","Home")" class="menu-button">Log Out</a>
+</div> *@
+
+<div class="menu">
+    <a href="@Url.Action("Index","Avatar")" class="menu-button">Create Outfit</a>
+    <a href="@Url.Action("Index","User", new { id = uid})" class="menu-button">My Profile</a>
+    <a href="@Url.Action("Index","Event")" class="menu-button">Join Event</a>
+    <a href="@Url.Action("HomeGuest","Home")" class="menu-button">Feed</a>
+    <form asp-controller="Home" asp-action="Logout"
+          method="post" class="logout-form">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="menu-button">Log Out</button>
+    </form>
 </div>
+
 
 <style>
     .menu {

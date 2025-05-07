@@ -2,9 +2,13 @@
 @using Dress_Up.Models
 @inject Microsoft.AspNetCore.Identity.UserManager<User> UserManager
 
-@Html.Partial("_MenuP")
+@if (User.Identity.IsAuthenticated)
+    @Html.Partial("_MenuP")
+else
+    @Html.Partial("_MenuG")
 
-<h2 class="title">News‑Feed Outfits</h2>
+
+<h2 class="title">News‑Feed Outfits</h2>
 
 <div class="grid">
     @foreach (var outfit in Model)
@@ -19,18 +23,28 @@
                 <p class="descr">@outfit.Description</p>
                 <small class="meta">
                     by <strong>@outfit.User?.UserName</strong> |
-                    @outfit.Date_added.ToString("dd MMM yyyy HH:mm")
+                    @outfit.Date_added.ToString("dd MMM yyyy HH:mm")
                 </small>
             </div>
 
-            <!-- LIKE -->
-            <form asp-controller="Outfit" asp-action="Like" asp-route-id="@outfit.Id"
-                  method="post" class="actions">
-                @Html.AntiForgeryToken()
-                <button class="btn-like" type="submit">
-                    ❤ Like (<span>@likeCount</span>)
-                </button>
-            </form>
+            <!-- LIKE / UNLIKE -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Outfit" asp-action="Like"
+                      asp-route-id="@outfit.Id"
+                      method="post" class="actions">
+                    @Html.AntiForgeryToken()
+                    <button class="btn-like" type="submit">
+                        ❤ Like (<span>@likeCount</span>)
+                    </button>
+                </form>
+            }
+            else
+            {
+                <div class="actions">
+                    <span class="like-count">❤ Like (@likeCount)</span>
+                </div>
+            }
 
             <!-- COMMENTS -->
             <details class="comments" open>
@@ -44,7 +58,7 @@
                     <div class="comment">
                         <strong>@(c.User?.UserName ?? "Guest"):</strong>
                         <span id="c-text-@c.Id">@c.Content</span>
-                        <small>@c.Date_created.ToString("dd.MM.yyyy HH:mm")</small>
+                        <small>@c.Date_created.ToString("dd.MM.yyyy HH:mm")</small>
 
                         @if (canManage)
                         {
@@ -67,15 +81,25 @@
                     </div>
                 }
 
-                <form asp-controller="Outfit" asp-action="AddComment"
-                      method="post" class="comment-form">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="outfitId" value="@outfit.Id" />
-                    <textarea name="content"
-                              placeholder="Add a comment…"
-                              required></textarea>
-                    <button type="submit">Post</button>
-                </form>
+                <!-- FORMULAR COMENTARIU NOU -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-controller="Outfit" asp-action="AddComment"
+                          method="post" class="comment-form">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="outfitId" value="@outfit.Id" />
+                        <textarea name="content" placeholder="Add a comment…" required></textarea>
+                        <button type="submit">Post</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="comment-form disabled">
+                        <textarea disabled placeholder="Sign in to comment"></textarea>
+                        <button disabled>Post</button>
+                    </div>
+                }
+
             </details>
         </div>
     }
@@ -178,7 +202,7 @@
         font-size: .75rem
     }
 
-    /* ---- like button ---- */
+    /* ---- like button / count ---- */
     .actions {
         display: flex;
         justify-content: center;
@@ -201,6 +225,13 @@
         .btn-like:hover {
             background: #f14f86
         }
+
+    .like-count {
+        color: #f14f86;
+        font-weight: 600;
+        font-size: .8rem;
+        padding: 6px 0
+    }
 
     /* ---- comments ---- */
     details.comments {

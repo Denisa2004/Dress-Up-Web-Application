@@ -2,66 +2,73 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = null;
 }
 
-<h1>@ViewData["Title"]</h1>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <title>Flipbook Simplu</title>
+    <link rel="stylesheet" href="~/css/register.css" />
+</head>
+<body>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+    <div class="back-to-home">
+        <a href="/Home/Index" class="back-to-home-btn">&#8592; Back</a>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    <div id="flipbook">
+        <div class="page active cover">
+            <h1 class="titlu-coperta">DRESS UP</h1>
+            <p class="intro-text">Welcome to the world of Dress Up! Create your account and step into the ultimate fashion experience.</p>
+            <div class="arrow-next" onclick="nextPage()">&#8594;</div>
+        </div>
+
+        <div class="page">
+            <img src="fashion1.jpg" alt="" />
+            <p>Are you ready to create your own style and put together the most chic outfits? Step into the world of fashion and express your unique flair with every look!</p>
+            <div class="arrow-next" onclick="nextPage()">&#8594;</div>
+            <div class="arrow-back" onclick="previousPage()">&#8592;</div>
+        </div>
+
+        <div class="page">
+            <img src="fashion2.jpg" alt="" />
+            <p>Create stunning outfits with the latest trends and compete in style challenges where your creativity takes center stage. Show off your fashion sense and let others admire your unique looks!</p>
+            <div class="arrow-next" onclick="nextPage()">&#8594;</div>
+            <div class="arrow-back" onclick="previousPage()">&#8592;</div>
+        </div>
+
+        <div class="page">
+            <h2>Enter your email and create a password to unlock your exclusive fashion world.</h2>
+
+            <form id="registerForm" method="post" asp-route-returnUrl="@Model.ReturnUrl">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <label>Email:</label><br />
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" required /><br />
+                <span asp-validation-for="Input.Email" class="text-danger"></span><br /><br />
+
+                <label>Password:</label><br />
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" required /><br />
+                <span asp-validation-for="Input.Password" class="text-danger"></span><br /><br />
+
+                <label>Confirm password:</label><br />
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" required /><br />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span><br /><br />
+
+                <button type="submit">Create an account</button>
+                <div class="arrow-back" onclick="previousPage()">&#8592;</div>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/js/register.js"></script>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>
