@@ -54,6 +54,22 @@ public class UserController : Controller
 
     }
 
+    public IActionResult PublicaOutfit(int id)
+    {
+        var outfit = _context.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+        if (outfit != null)
+        {
+            outfit.IsPublic = true;
+            _context.SaveChanges();
+            TempData["message"] = "Outfit-ul a fost publicat cu succes!";
+        }
+        else
+        {
+            TempData["message"] = "Outfit-ul nu a fost gasit!";
+        }
+        return Redirect("/User/Index/" + outfit!.User!.Id);
+    }
+
     [HttpGet]
    /* [Authorize(Roles = "Admin,User")]*/
     public async Task<IActionResult> Edit()

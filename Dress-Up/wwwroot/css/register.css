@@ -27,8 +27,8 @@ body {
         border-radius: 50%;
         transform: translate(-50%, -50%);
         z-index: 1;
-        box-shadow: 0 0 80px rgba(247, 167, 185, 0.1);
-        background: transparent;
+        box-shadow: 0 0 80px rgba(247, 167, 185, 0.1); 
+        background: transparent; 
         pointer-events: none;
     }
 

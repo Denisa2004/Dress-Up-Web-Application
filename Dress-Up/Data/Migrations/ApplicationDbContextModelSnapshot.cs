@@ -69,40 +69,6 @@ namespace Dress_Up.Data.Migrations
                     b.ToTable("Clothes");
                 });
 
-            modelBuilder.Entity("Dress_Up.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date_created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Date_updated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OutfitId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OutfitId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
-
             modelBuilder.Entity("Dress_Up.Models.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -450,25 +416,6 @@ namespace Dress_Up.Data.Migrations
                     b.HasOne("Dress_Up.Models.Outfit", null)
                         .WithMany("Clothes")
                         .HasForeignKey("OutfitId");
-                });
-
-            modelBuilder.Entity("Dress_Up.Models.Comment", b =>
-                {
-                    b.HasOne("Dress_Up.Models.Outfit", "Outfit")
-                        .WithMany()
-                        .HasForeignKey("OutfitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Dress_Up.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Outfit");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Dress_Up.Models.Outfit", b =>
