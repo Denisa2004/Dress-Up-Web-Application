@@ -22,6 +22,9 @@ namespace Dress_Up.Data
 
         public DbSet<UserEvent> UserEvents { get; set; }
 
+       
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

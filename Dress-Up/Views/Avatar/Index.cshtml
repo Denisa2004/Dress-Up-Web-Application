@@ -13,8 +13,8 @@
     {
         <div style="text-align: center;">
             <a href="@Url.Action("Personalizare", "Avatar", new { id = avatar.Id })">
-                <img src="@Url.Content($"~/images/base{avatar.Id}.png")" alt="Avatar @avatar.Id" width="200" style="border-radius: 12px;" /> 
-                <br />
+                <img src="@Url.Content($"~/images/base" + avatar.Id + ".png")" alt="Avatar @avatar.Id" width="200" style="border-radius: 12px;" />
+            <br />
                 <button class="btn btn-primary mt-2">Select</button>
             </a>
         </div>

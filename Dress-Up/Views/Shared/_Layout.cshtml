@@ -17,7 +17,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                @* <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -27,7 +27,14 @@
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
-                </div>
+                </div> 
+                IN LOC DE LOGIN PARTIAL VA APAREA MENIUL IN DREAPTA JOS, FACUT DE ANASTASIA, IN FUNCTIE DE TIPUL DE UTILIZATOR
+                *@
+                @if (User.Identity.IsAuthenticated)
+                    @Html.Partial("_MenuP")
+                else
+                    @Html.Partial("_MenuG")
+
             </div>
         </nav>
     </header>
