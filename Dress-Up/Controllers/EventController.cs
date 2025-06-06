@@ -102,7 +102,6 @@ public class EventController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST: Șterge un concurs
     [HttpPost("delete/{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
