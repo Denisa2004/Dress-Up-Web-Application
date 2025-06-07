@@ -175,3 +175,38 @@
         }
     </div>
 </div>
+
+
+<hr class="mt-5 mb-4" />
+<div class="row">
+    <div class="col-12">
+        <h3>
+            <a class="text-decoration-none" data-bs-toggle="collapse" href="#achievementsCollapse"
+               role="button" aria-expanded="false" aria-controls="achievementsCollapse">
+                🎖️ Medaliile mele
+            </a>
+        </h3>
+
+        <div class="collapse" id="achievementsCollapse">
+            <div class="d-flex flex-wrap gap-4 mt-3">
+                @if (ViewBag.UserAchievements != null && ((IEnumerable<Dress_Up.Models.Achievement>)ViewBag.UserAchievements).Any())
+                {
+                    foreach (var achievement in (IEnumerable<Dress_Up.Models.Achievement>)ViewBag.UserAchievements)
+                    {
+                        <div class="text-center">
+                            <img src="@achievement.IconUrl"
+                                 alt="@achievement.Name"
+                                 title="@achievement.Name"
+                                 style="width:100px;height:100px;object-fit:contain;" />
+                            <div class="fw-semibold mt-2">@achievement.Name</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted mt-2">Încă nu ai câștigat nicio medalie.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

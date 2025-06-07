@@ -22,6 +22,35 @@ namespace Dress_Up.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Dress_Up.Models.Achievement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IconUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Achievements");
+                });
+
             modelBuilder.Entity("Dress_Up.Models.Avatar", b =>
                 {
                     b.Property<int>("Id")
@@ -249,6 +278,27 @@ namespace Dress_Up.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.UserAchievement", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AchievementId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateEarned")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "AchievementId");
+
+                    b.HasIndex("AchievementId");
+
+                    b.ToTable("UserAchievements");
                 });
 
             modelBuilder.Entity("Dress_Up.Models.UserEvent", b =>
@@ -487,6 +537,25 @@ namespace Dress_Up.Migrations
                         .HasForeignKey("EventId");
                 });
 
+            modelBuilder.Entity("Dress_Up.Models.UserAchievement", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Achievement", "Achievement")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("AchievementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dress_Up.Models.User", "User")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Dress_Up.Models.UserEvent", b =>
                 {
                     b.HasOne("Dress_Up.Models.Event", "Event")
@@ -591,6 +660,11 @@ namespace Dress_Up.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Dress_Up.Models.Achievement", b =>
+                {
+                    b.Navigation("UserAchievements");
+                });
+
             modelBuilder.Entity("Dress_Up.Models.Event", b =>
                 {
                     b.Navigation("UserEvents");
@@ -614,6 +688,8 @@ namespace Dress_Up.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Outfits");
+
+                    b.Navigation("UserAchievements");
 
                     b.Navigation("UserEvents");
                 });

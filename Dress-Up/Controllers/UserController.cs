@@ -12,11 +12,13 @@ public class UserController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly AchievementService _achievementService;
 
-    public UserController(ApplicationDbContext context, UserManager<User> userManager)
+    public UserController(ApplicationDbContext context, UserManager<User> userManager, AchievementService achievementService)
     {
         _context = context;
         _userManager = userManager;
+        _achievementService = achievementService;
     }
 
     public IActionResult Index(string id)
@@ -33,6 +35,10 @@ public class UserController : Controller
         {
             return NotFound();
         }
+
+        var achievements = _achievementService.GetUserAchievementsAsync(id);
+        ViewBag.UserAchievements = achievements;
+
 
         //daca este contul propriu sau admin afisez si categoriile private
         if (userId == id || User.IsInRole("Admin"))

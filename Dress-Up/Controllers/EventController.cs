@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 public class EventController : Controller
 {
     private readonly ApplicationDbContext db;
+    private readonly AchievementService _achievementService;
 
-    public EventController(ApplicationDbContext context)
+    public EventController(ApplicationDbContext context, AchievementService achievementService)
     {
         db = context;
+        _achievementService = achievementService;
     }
 
     [HttpGet]
@@ -96,7 +98,21 @@ public class EventController : Controller
 
         ev.Description = castigator != null
             ? $"Castigatorul este: {castigator.OutfitName}"
-            : "Nu există castigator.";
+            : "Nu exista castigator.";
+
+        if (castigator != null)
+        {
+            var winningOutfit = await db.Outfits
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == castigator.OutfitId);
+
+            if (winningOutfit != null)
+            {
+                await _achievementService.AddAchievementToUser(winningOutfit.User.Id, "FirstEventWin");
+                TempData["Achievement"] = $"Felicitari {winningOutfit.User.UserName}! Ai castigat primul tau concurs!";
+            }
+        }
+
 
         await db.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
@@ -191,6 +207,19 @@ public class EventController : Controller
 
         db.UserEvents.Add(userEvent);
         await db.SaveChangesAsync();
+
+        var participations = await db.UserEvents.CountAsync(ue => ue.UserId == user.Id);
+        if (participations == 1)
+        {
+            await _achievementService.AddAchievementToUser(user.Id, "FirstEventParticipation");
+            TempData["Achievement"] = "Felicitari! Ai participat la primul tau concurs!";
+        }
+
+        if (participations == 5)
+        {
+            await _achievementService.AddAchievementToUser(user.Id, "FiveEventParticipations");
+            TempData["Achievement"] = "Wow! Ai participat la 5 concursuri!";
+        }
 
         return RedirectToAction("Index", "Event");
     }

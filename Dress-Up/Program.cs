@@ -16,22 +16,31 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();*/
 
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<AchievementService>(); // Move this line above the Build() call  
 var app = builder.Build();
-
-// PASUL 5 - useri si roluri
+// PASUL 5 - useri si roluri plus adaugat achievements in baza de date
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate();
+
     SeedData.Initialize(services);
+
+    AchievementSeeder.SeedAchievements(context);
 }
+
 
 
 // Configure the HTTP request pipeline.
