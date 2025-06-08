@@ -4,6 +4,20 @@
     ViewData["Title"] = "Profilul Meu";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Error"]
+    </div>
+}
+
+
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -131,7 +145,17 @@
                     <div class="text-end mt-3">
                         <a href="@Url.Action("Edit", "User", new { id = @Model.Id })" class="btn btn-danger">Edit Profile</a>
                     </div>
+                    @if (ViewBag.Admin)
+                    {
+                        <form asp-action="MakeAdmin" asp-controller="User" asp-route-id="@Model.Id" method="post" class="mt-2" onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="btn btn-danger">Give Admin Role</button>
+                        </form>
+                        <form asp-action="RmvAdmin" asp-controller="User" asp-route-id="@Model.Id" method="post" class="mt-2" onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="btn btn-danger">Delete Admin Role</button>
+                        </form>
+                    }
                 }
+                
             </div>
         </div>
     </div>

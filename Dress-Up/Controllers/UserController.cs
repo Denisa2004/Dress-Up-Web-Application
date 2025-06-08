@@ -12,11 +12,13 @@ public class UserController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public UserController(ApplicationDbContext context, UserManager<User> userManager)
+    public UserController(ApplicationDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _context = context;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     public IActionResult Index(string id)
@@ -40,6 +42,7 @@ public class UserController : Controller
             var UserOutfits = _context.Outfits.Where(u => u.User.Id == id);
             ViewBag.UserOutfits = UserOutfits;
             ViewBag.AfisareButoane = true; //pentru a sti daca afisez butoanele de editare sau nu
+            ViewBag.Admin = User.IsInRole("Admin");
             return View(user);
         }
         else
@@ -113,8 +116,6 @@ public class UserController : Controller
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "User", new { id = user.Id });
-
-
             }
 
             else
@@ -127,6 +128,55 @@ public class UserController : Controller
         }
 
         return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> MakeAdmin(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            TempData["Error"] = "Utilizatorul nu a fost găsit.";
+            return RedirectToAction("Index");
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, "Admin");
+
+        if (!result.Succeeded)
+        {
+            TempData["Error"] = "Nu s-a putut adăuga rolul de admin.";
+            return RedirectToAction("Index", "User", new { id = user.Id });
+        }
+
+        TempData["Success"] = "Utilizatorul a devenit admin!";
+
+        return RedirectToAction("Index", "User", new { id = user.Id });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RmvAdmin(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            TempData["Error"] = "Utilizatorul nu a fost găsit.";
+            return RedirectToAction("Index");
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, "Admin");
+
+
+        if (!result.Succeeded)
+        {
+            TempData["Error"] = "Nu s-a putut sterge rolul de admin.";
+            return RedirectToAction("Index", "User", new { id = user.Id });
+        }
+
+        TempData["Success"] = "Utilizatorul nu mai are rol de admin!";
+        if (user.Id == _userManager.GetUserId(User))
+            await _signInManager.RefreshSignInAsync(user); //daca userul curent este admin si isi sterge rolul, nu mai afisez butoanele pt rol
+
+        return RedirectToAction("Index", "User", new { id = user.Id });
     }
 
 }
