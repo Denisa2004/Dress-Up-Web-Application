@@ -1,0 +1,56 @@
+﻿@model Dress_Up.Models.Outfit
+
+
+<h2 class="text-center mt-5">Edit Outfit</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body">
+
+                    <form method="post" asp-action="Edit" asp-controller="Outfit" asp-route-id="@Model.Id">
+
+                        <!-- nume outfit -->
+                        <div class="form-group">
+                            <label asp-for="Name" class="form-label">Your outfits's name</label>
+                            <input asp-for="Name" class="form-control form-control-lg" placeholder="Please write the new name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- descriere outfit -->
+                        <div class="form-group mt-3">
+                            <label asp-for="Description" class="form-label">Outfit's description</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Please write the new description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        
+                        @* vizibiltate outfit *@
+                        <div method="get" class="mb-3 d-flex align-items-center" style="width: auto;">
+                            <label for="IsPublic" class="me-2 mb-0">Public Outfit</label>
+                            @Html.DropDownList("IsPublic", new List<SelectListItem>
+                            {
+                            new SelectListItem { Text = "Public", Value = "true" },
+                            new SelectListItem { Text = "Private", Value = "false" }
+                            }, new { @class = "form-select", style = "width: auto;" })
+                        </div>
+
+                        <!-- buton submit -->
+                        <div class="form-group text-center mt-4">
+                            <button type="submit" class="details-button">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["message"] != null)
+{
+    <div class="alert @TempData["messageType"]">
+        @TempData["message"]
+    </div>
+}
+
+

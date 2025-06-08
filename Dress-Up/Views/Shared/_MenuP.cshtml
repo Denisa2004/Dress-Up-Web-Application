@@ -1,0 +1,76 @@
+﻿@* 
+    _MenuP  ▸  meniul principal pentru user autentificat
+
+*@
+
+@using Dress_Up.Models
+@inject Microsoft.AspNetCore.Identity.UserManager<User> UserManager
+
+@* id‑ul utilizatorului curent (null pentru guest) *@
+@{
+    var uid = UserManager.GetUserId(User);
+}
+
+@* <div class="menu">
+    <a href="@Url.Action("Index","Avatar")" class="menu-button">Create Outfit</a>
+    <a href="@Url.Action("Index","User", new { id = uid})" class="menu-button">My Profile</a>
+    <a href="@Url.Action("Index","Event")" class="menu-button">Join Event</a>
+    <a href="@Url.Action("HomeGuest","Home")" class="menu-button">Feed</a>
+    <a href="@Url.Action("Index","Home")" class="menu-button">Log Out</a>
+</div> *@
+
+<div class="menu">
+    <a href="@Url.Action("Index","Avatar")" class="menu-button">Create Outfit</a>
+    <a href="@Url.Action("Index","User", new { id = uid})" class="menu-button">My Profile</a>
+    <a href="@Url.Action("Index","Event")" class="menu-button">Join Event</a>
+    <a href="@Url.Action("HomeGuest","Home")" class="menu-button">Feed</a>
+    <form asp-controller="Home" asp-action="Logout"
+          method="post" class="logout-form">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="menu-button">Log Out</button>
+    </form>
+</div>
+
+
+<style>
+    .menu {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 1000;
+    }
+
+    .menu-button {
+        width: 180px;
+        padding: 12px 25px;
+        background: #f7b1c1;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 25px;
+        text-align: center;
+        font-size: 16px;
+        font-family: 'Arial',sans-serif;
+        box-shadow: 0 6px 12px rgba(0,0,0,.2);
+        transition: all .3s ease;
+    }
+
+        .menu-button:hover {
+            background: #f14f86;
+            box-shadow: 0 10px 20px rgba(0,0,0,.3);
+            transform: scale(1.1);
+        }
+
+        .menu-button:active {
+            background: #e02d63;
+            transform: scale(1);
+        }
+
+    /* mic spaţiu ca meniul să nu acopere conţinutul la scroll lung */
+    body {
+        margin-bottom: 100px;
+    }
+</style>
+

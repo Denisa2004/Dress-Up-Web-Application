@@ -1,0 +1,92 @@
+﻿@model List<Dress_Up.Models.Event>
+
+@{
+    ViewBag.Title = "Evenimente";
+    var evenimente = Model;
+    var evenimenteActive = evenimente.Where(e => e.IsActive).ToList();
+    var evenimenteInactive = evenimente.Where(e => !e.IsActive).ToList(); 
+}
+@if (User.IsInRole("Admin"))
+{
+    <form asp-action="New" asp-controller="Event" method="post" class="mt-2">
+        <button type="submit" class="btn btn-success">Adauga un concurs</button>
+    </form>
+}
+<!-- Evenimente Active -->
+@if (evenimenteActive == null || !evenimenteActive.Any())
+{
+    <div class="alert alert-warning text-center">
+        Nu există evenimente active.
+    </div>
+}
+else
+{
+    <div class="row">
+        <h3>Evenimente la care poți participa:</h3>
+        @foreach (var ev in evenimenteActive) 
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 clickable-card" data-url="@Url.Action("Show", "Event", new { id = ev.Id })">
+                    <img src="@ev.Image" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h4 class="card-title">@ev.Name</h4>
+                        <p class="card-text">@ev.Description</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="@Url.Action("Participate", "Event", new { eventId = ev.Id })" class="btn btn-success" onclick="event.stopPropagation();">Participă</a>
+                        <a class="btn btn-success" href="@Url.Action("Vote", "Event", new { eventId = ev.Id})">Voteaza</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form asp-action="Stop" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2" onclick="event.stopPropagation();">
+                                <button type="submit" class="btn btn-danger">Opreste Concurs</button>
+                            </form>
+                            <form asp-action="Delete" asp-controller="Event" asp-route-id="@ev.Id" method="post" class="mt-2" onsubmit="return confirm('Concursul se va sterge.');" onclick="event.stopPropagation();">
+                                <button type="submit" class="btn btn-danger">Sterge Concursul</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Evenimente Inactive -->
+@if (evenimenteInactive == null || !evenimenteInactive.Any())
+{
+    <div class="alert alert-info text-center">
+        Nu exista evenimente din trecut.
+    </div>
+}
+else
+{
+    <div class="row">
+        <h3>Evenimente din trecut:</h3>
+        @foreach (var ev in evenimenteInactive) 
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100" style="opacity: 0.6; filter: grayscale(100%);">
+                    <img src="@ev.Image" class="card-img-top" alt="Event Image" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h4 class="card-title">@ev.Name</h4>
+                        <p class="card-text">@ev.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+@section Scripts {
+    <script>
+        document.querySelectorAll(".clickable-card").forEach(card => {
+            card.addEventListener("click", () => {
+                const url = card.getAttribute("data-url");
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+}

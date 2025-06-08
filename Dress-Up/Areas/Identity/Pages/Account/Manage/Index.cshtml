@@ -1,0 +1,77 @@
+﻿@page
+
+@using Dress_Up.Data
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext _context
+
+
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var outfits = _context.Outfits.Where(o => o.User.Id == user.Id).ToList();
+}
+
+<hr />
+<h3>@user.UserName</h3>
+<h3>Outfit-uri salvate</h3>
+
+@if (outfits.Any())
+{
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        @foreach (var outfit in outfits)
+        {
+            <div style="text-align: center;">
+                <img src="@Url.Content(outfit.Image)" alt="@outfit.Name" width="200" style="border-radius: 12px;" />
+                <p>@outfit.Name</p>
+                <p><small>@outfit.Date_added.ToShortDateString()</small></p>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Nu ai salvat niciun outfit încă.</p>
+}
+
+
+
+
+
+
+
+
+
+
+
+@* 
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+ *@

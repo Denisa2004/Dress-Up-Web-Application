@@ -1,0 +1,90 @@
+﻿@model Dress_Up.Models.User
+
+<h2>Edit Profile</h2>
+
+<style>
+    .edit-profile-container {
+        background-color: #f7f1f8; 
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    h2 {
+        color: #e91e63; 
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #e91e63;
+        background-color: #ffffff;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #f50057; 
+            box-shadow: 0 0 5px rgba(229, 30, 99, 0.5);
+        }
+
+    button[type="submit"] {
+        background-color: #e91e63; 
+        border-color: #e91e63;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #d81b60; 
+        }
+
+    i {
+        color: #e91e63;
+        margin-right: 10px;
+    }
+</style>
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @id = "editForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Id)
+
+    <i class="bi bi-person"></i>
+    @Html.LabelFor(m => m.FirstName, "First Name")
+    <br />
+    @Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+    <br />
+
+    <i class="bi bi-person"></i>
+    @Html.LabelFor(m => m.LastName, "Last Name")
+    <br />
+    @Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+    <br />
+
+    <i class="bi bi-info-circle"></i>
+    @Html.LabelFor(m => m.About, "About")
+    <br />
+    @Html.TextAreaFor(m => m.About, new { @class = "form-control", rows = 3 })
+    <br />
+
+    <i class="bi bi-image"></i>
+    @Html.LabelFor(m => m.ProfilePictureUrl, "Profile Picture URL")
+    <br />
+    @Html.TextBoxFor(m => m.ProfilePictureUrl, new { @class = "form-control" })
+    <br />
+
+    <button class="btn btn-success" type="submit">Save Changes</button>
+}
+

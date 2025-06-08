@@ -95,7 +95,10 @@
     <div class="avatar-zone">
         <canvas id="avatarCanvas" width="400" height="650"></canvas>
         <div style="margin-top: 1rem;">
-            <button onclick="saveAvatar()">Salvează outfit</button>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <button onclick="saveAvatar()">Salvează outfit</button>
+            }
             <button onclick="resetAvatar()">Resetează avatarul</button>
         </div>
     </div>
@@ -135,7 +138,7 @@
             "dresses1": { x: 90, y: 150, w: 220, h: 350 },
             "dresses2": { x: 80, y: 170, w: 240, h: 350 },
             "dresses3": { x: 60, y: 150, w: 290, h: 400 },
-            "dresses4": { x: 7, y: 122,  w: 390, h: 530 },
+            "dresses4": { x: 7, y: 122, w: 390, h: 530 },
 
             "shoes1": { x: 150, y: 580, w: 106, h: 110 },
             "shoes2": { x: 150, y: 580, w: 100, h: 110 },
