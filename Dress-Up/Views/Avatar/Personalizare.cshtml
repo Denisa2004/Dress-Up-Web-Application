@@ -137,10 +137,10 @@
             "dresses3": { x: 60, y: 150, w: 290, h: 400 },
             "dresses4": { x: 7, y: 122,  w: 390, h: 530 },
 
-            "shoes1": { x: 140, y: 600, w: 100, h: 80 },
-            "shoes2": { x: 140, y: 600, w: 100, h: 80 },
-            "shoes3": { x: 152, y: 585, w: 97, h: 80 },
-            "shoes4": { x: 140, y: 600, w: 100, h: 80 },
+            "shoes1": { x: 150, y: 580, w: 106, h: 110 },
+            "shoes2": { x: 150, y: 580, w: 100, h: 110 },
+            "shoes3": { x: 150, y: 577, w: 103, h: 100 },
+            "shoes4": { x: 150, y: 580, w: 103, h: 90 },
 
             "hair1": { x: 112, y: 22, w: 170, h: 235 },
             "hair2": { x: 136, y: 22, w: 125, h: 180 },
@@ -163,7 +163,7 @@
             accessories: null
         };
 
-        const Categories = ['base', 'dresses', 'pants', 'tops', 'shoes', 'hair', 'accessories'];
+        const Categories = ['base','shoes', 'dresses', 'pants', 'tops', 'hair', 'accessories'];
 
         function drawAvatar() {
             const canvas = document.getElementById("avatarCanvas");
@@ -205,6 +205,12 @@
             // Dacă alegi top sau pants => scoate rochia
             if (categ === "tops" || categ === "pants") {
                 layers["dresses"] = null;
+            }
+
+            if (categ === "shoes") {
+                const index = imageName.replace("shoes", "");
+                imagePath = `/images/shoes/${index}.png`;  // <- aici schimbăm doar numele fișierului
+                imageName = `shoes${index}`;
             }
 
             layers[categ] = { path: imagePath, name: imageName };
