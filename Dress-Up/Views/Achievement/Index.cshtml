@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Dress_Up.Models.UserAchievement>
+
+<h2>Achievements for @ViewBag.FirstName @ViewBag.LastName</h2>
+
+@if (!Model.Any())
+{
+    <p>No achievements yet!</p>
+}
+else
+{
+    <ul>
+        <ul style="list-style-type: none; padding-left: 0;">
+            @foreach (var ua in Model)
+            {
+                <li>
+                    <img src="@ua.Achievement.IconUrl" alt="@ua.Achievement.Name" />
+                    <br />
+                    <strong>@ua.Achievement.Name</strong> - @ua.Achievement.Description
+                    Earned on: @ua.DateEarned.ToShortDateString()
+                </li>
+            }
+        </ul>
+
+    </ul>
+}

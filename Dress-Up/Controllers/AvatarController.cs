@@ -59,7 +59,7 @@ public class AvatarController(ApplicationDbContext context, UserManager<User> us
 
         if (outfitCount == 1)
         {
-            var achievement =  _achievementService.AddAchievementToUser(user.Id, "FIRST_OUTFIT");
+            var achievement = await _achievementService.AddAchievementToUser(user.Id, "FIRST_OUTFIT");
             if (achievement != null)
             {
                 TempData["AchievementMessage"] = "Felicitări! Ai creat primul tău outfit!";
@@ -67,7 +67,7 @@ public class AvatarController(ApplicationDbContext context, UserManager<User> us
         }
         else if (outfitCount == 5)
         {
-            var achievement =  _achievementService.AddAchievementToUser(user.Id, "FIVE_OUTFITS");
+            var achievement = await _achievementService.AddAchievementToUser(user.Id, "FIVE_OUTFITS");
             if (achievement != null)
             {
                 TempData["AchievementMessage"] = "Felicitări! Ai creat 5 outfituri!";

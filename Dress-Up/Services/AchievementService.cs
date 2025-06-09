@@ -14,26 +14,34 @@ public class AchievementService
 
     public async Task<Achievement?> AddAchievementToUser(string userId, string code)
     {
-        var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Code == code);
-        if (achievement == null) return null;
+        var user = await _context.Users
+            .Include(u => u.UserAchievements)
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
-        bool alreadyHas = await _context.UserAchievements
-            .AnyAsync(ua => ua.UserId == userId && ua.AchievementId == achievement.Id);
+        var achievement = await _context.Achievements
+            .FirstOrDefaultAsync(a => a.Code == code);
 
-        if (alreadyHas) return null;
+        if (user == null || achievement == null)
+            return null;
 
-        var userAchievement = new UserAchievement
+        bool alreadyHas = user.UserAchievements.Any(ua => ua.AchievementId == achievement.Id);
+
+        if (!alreadyHas)
         {
-            UserId = userId,
-            AchievementId = achievement.Id,
-            DateEarned = DateTime.UtcNow
-        };
+            user.UserAchievements.Add(new UserAchievement
+            {
+                UserId = user.Id,
+                AchievementId = achievement.Id,
+                DateEarned = DateTime.Now
+            });
 
-        _context.UserAchievements.Add(userAchievement);
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return achievement;
+        }
 
-        return achievement;
+        return null;
     }
+
 
     public async Task<List<Achievement>> GetUserAchievementsAsync(string userId)
     {

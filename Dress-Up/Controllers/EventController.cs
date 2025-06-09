@@ -108,7 +108,7 @@ public class EventController : Controller
 
             if (winningOutfit != null)
             {
-                await _achievementService.AddAchievementToUser(winningOutfit.User.Id, "FirstEventWin");
+                await _achievementService.AddAchievementToUser(winningOutfit.User.Id, "FIRST_WON");
                 TempData["Achievement"] = $"Felicitari {winningOutfit.User.UserName}! Ai castigat primul tau concurs!";
             }
         }
@@ -211,13 +211,13 @@ public class EventController : Controller
         var participations = await db.UserEvents.CountAsync(ue => ue.UserId == user.Id);
         if (participations == 1)
         {
-            await _achievementService.AddAchievementToUser(user.Id, "FirstEventParticipation");
+            await _achievementService.AddAchievementToUser(user.Id, "FIRST_EVENT");
             TempData["Achievement"] = "Felicitari! Ai participat la primul tau concurs!";
         }
 
         if (participations == 5)
         {
-            await _achievementService.AddAchievementToUser(user.Id, "FiveEventParticipations");
+            await _achievementService.AddAchievementToUser(user.Id, "FIVE_EVENT");
             TempData["Achievement"] = "Wow! Ai participat la 5 concursuri!";
         }
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dress_Up.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250607174014_InitialSync")]
+    [Migration("20250607180905_InitialSync")]
     partial class InitialSync
     {
         /// <inheritdoc />

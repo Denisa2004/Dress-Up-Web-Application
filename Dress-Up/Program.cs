@@ -17,7 +17,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();*/
 
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false)
@@ -26,7 +26,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<AchievementService>(); // Move this line above the Build() call  
+builder.Services.AddScoped<AchievementService>(); 
 var app = builder.Build();
 // PASUL 5 - useri si roluri plus adaugat achievements in baza de date
 using (var scope = app.Services.CreateScope())
