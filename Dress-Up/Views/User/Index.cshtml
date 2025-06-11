@@ -164,6 +164,69 @@
     </div>
 </div>
 
+@if (!User.IsInRole("Admin") && ViewBag.AlertMessages != null && ((IEnumerable<dynamic>)ViewBag.AlertMessages).Any())
+{
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mt-4">Alerte primite</h3>
+            <ul class="list-group mb-4">
+                @foreach (var alert in (IEnumerable<dynamic>)ViewBag.AlertMessages)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <strong>@alert.SentAt.ToString("dd.MM.yyyy HH:mm")</strong>: @alert.Content
+                        </span>
+
+                        @if (!alert.IsRead)
+                        {
+                            <form asp-action="MarkAsRead" asp-controller="Alert" method="post">
+                                <input type="hidden" name="alertId" value="@alert.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Marchează ca citit</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success d-flex align-items-center gap-1">
+                                <i class="bi bi-check-circle-fill"></i> Văzut
+                            </span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h3>Trimite o alertă unui utilizator</h3>
+
+            <form asp-controller="Alert" asp-action="Send" method="post">
+                <div class="form-group">
+                    <label for="userId">Selectează utilizatorul:</label>
+                    <select class="form-control" name="userId">
+                        @foreach (var user in ViewBag.AllUsers as List<User>)
+                        {
+                            <option value="@user.Id">@user.UserName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="content">Mesaj:</label>
+                    <textarea name="content" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger mt-3">Trimite alerta</button>
+            </form>
+        </div>
+    </div>
+}
+
 
 <div class="row">
     <div class="col-12">

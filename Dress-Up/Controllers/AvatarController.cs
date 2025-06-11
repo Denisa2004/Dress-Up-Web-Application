@@ -14,12 +14,42 @@ public class AvatarController(ApplicationDbContext context, UserManager<User> us
     private readonly ApplicationDbContext _context = context;
     private readonly UserManager<User> _userManager = userManager;
 
+    /*
     public IActionResult Index()
     {
         var avatars = _context.Avatars.ToList(); // parcurge toate avatarele
         ViewBag.Avatars = avatars;
         return View(); // trimite lista în View
     }
+    */
+    public IActionResult Index()
+    {
+        var dbConnection = _context.Database.GetDbConnection();
+        Console.WriteLine("DB Connection: " + dbConnection.ConnectionString);
+        Console.WriteLine("DB Name: " + dbConnection.Database);
+
+        var avatars = _context.Avatars.ToList();
+
+        if (!avatars.Any())
+        {
+            Console.WriteLine("⚠️ Nu există avatare în baza de date. Se inserează automat...");
+
+            _context.Avatars.AddRange(new List<Avatar>
+        {
+            new Avatar { Name = "Avatar 1", ImageData = "placeholder1" },
+            new Avatar { Name = "Avatar 2", ImageData = "placeholder2" },
+            new Avatar { Name = "Avatar 3", ImageData = "placeholder3" }
+        });
+            _context.SaveChanges();
+
+            avatars = _context.Avatars.ToList();
+        }
+
+        ViewBag.Avatars = avatars;
+        return View();
+    }
+
+
 
 
     [HttpGet]

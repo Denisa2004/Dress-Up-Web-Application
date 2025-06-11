@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Trimite Mesaj către Utilizator";
+    var users = ViewBag.Users as List<Dress_Up.Models.User>;
+}
+
+<h2>Trimite alertă către utilizator</h2>
+
+@if (TempData["Msg"] != null)
+{
+    <p class="alert alert-success">@TempData["Msg"]</p>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label for="userId">Selectează utilizator:</label>
+        <select name="userId" class="form-select" required>
+            <option value="">-- Alege utilizator --</option>
+            @foreach (var user in users)
+            {
+                <option value="@user.Id">@user.UserName (@user.Email)</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="content">Mesaj:</label>
+        <textarea name="content" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-danger">Trimite mesaj</button>
+</form>

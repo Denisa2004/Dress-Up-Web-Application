@@ -3,33 +3,72 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Dress_Up</title>
+    <title>@ViewData["Title"] - DRESS UP</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Dress_Up.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        
+        body {
+            background: linear-gradient(to bottom right, #ffe6f0, #ffccf2);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar {
+            background-color: #fff0f5;
+            border-bottom: 2px solid #ffb6c1;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+
+        .navbar-brand {
+            font-family: 'font_title';
+            font-size: 2rem;
+            color: #ff69b4 !important;
+            -webkit-text-stroke: 0.5px #d81b60;
+            text-shadow:
+                0 0 8px #ff1493,
+                0 0 15px #ff1493,
+                0 0 30px #ff1493,
+                0 0 60px #ff1493,
+                0 0 100px #ff1493,
+                10px 10px 30px rgba(0, 0, 0, 0.2),
+                -10px -10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            top: 5px;
+            transform: none;
+        }
+
+        .container main {
+            padding-top: 30px;
+        }
+
+        /* Elimina footerul */
+        footer {
+            display: none;
+        }
+
+        /* Optional: Stil pentru butoane sau linkuri */
+        .btn, .nav-link {
+            color: #d81b60 !important;
+            font-weight: bold;
+        }
+
+        .btn:hover, .nav-link:hover {
+            color: #ff1493 !important;
+            text-shadow: 0 0 5px #ff69b4;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Dress_Up</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DRESS UP</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @* <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div> 
-                IN LOC DE LOGIN PARTIAL VA APAREA MENIUL IN DREAPTA JOS, FACUT DE ANASTASIA, IN FUNCTIE DE TIPUL DE UTILIZATOR
-                *@
                 @if (User.Identity.IsAuthenticated)
                     @Html.Partial("_MenuP")
                 else
@@ -38,17 +77,13 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Dress_Up - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

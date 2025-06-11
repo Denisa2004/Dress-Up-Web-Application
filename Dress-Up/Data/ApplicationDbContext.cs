@@ -12,7 +12,7 @@ namespace Dress_Up.Data
         }
 
         public DbSet<Outfit> Outfits { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
         public DbSet <Vote> Votes { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
@@ -21,7 +21,10 @@ namespace Dress_Up.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<UserEvent> UserEvents { get; set; }
 
-       
+        public DbSet<AlertMessage> AlertMessages { get; set; }
+
+
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
