@@ -21,6 +21,8 @@ public class UserController : Controller
 
     public IActionResult Index(string id)
     {
+        
+
         var userId = _userManager.GetUserId(User);
         var user = _context.Users.FirstOrDefault(u => u.Id == id);
 
@@ -32,6 +34,19 @@ public class UserController : Controller
         if (user == null)
         {
             return NotFound();
+        }
+
+        var messages = _context.AlertMessages
+                   .Where(m => m.UserId == user.Id && !m.IsRead)
+                   .OrderByDescending(m => m.SentAt)
+                   .ToList();
+
+        ViewBag.AlertMessages = messages;
+
+        if (User.IsInRole("Admin"))
+        {
+            var allUsers = _context.Users.ToList();
+            ViewBag.AllUsers = allUsers;
         }
 
         //daca este contul propriu sau admin afisez si categoriile private
@@ -50,6 +65,7 @@ public class UserController : Controller
 
             return View(user);
         }
+
 
 
     }
