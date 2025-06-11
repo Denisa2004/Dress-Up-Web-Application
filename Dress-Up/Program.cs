@@ -13,25 +13,35 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 /*builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();*/
+    .AddEntityFrameworkStores<ApplicationDbContext>();*/
+
+builder.Services.AddControllersWithViews();
+
+
+
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<AchievementService>(); 
 var app = builder.Build();
-
-// PASUL 5 - useri si roluri
+// PASUL 5 - useri si roluri plus adaugat achievements in baza de date
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate();
+
     SeedData.Initialize(services);
+
+    AchievementSeeder.SeedAchievements(context);
 }
+
 
 
 // Configure the HTTP request pipeline.

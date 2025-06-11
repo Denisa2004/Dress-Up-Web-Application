@@ -129,6 +129,9 @@
                 @if (ViewBag.AfisareButoane)
                 {
                     <div class="text-end mt-3">
+                        <a href="@Url.Action("Index", "Achievement")" class="btn btn-danger">My Achievements</a>
+                    </div>
+                    <div class="text-end mt-3">
                         <a href="@Url.Action("Edit", "User", new { id = @Model.Id })" class="btn btn-danger">Edit Profile</a>
                     </div>
                 }
@@ -238,3 +241,4 @@
         }
     </div>
 </div>
+

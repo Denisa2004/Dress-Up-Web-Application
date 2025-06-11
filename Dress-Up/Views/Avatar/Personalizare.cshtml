@@ -1,18 +1,93 @@
-﻿@*
-    aici o sa fie in stanga avatarul pe care l-am ales, care se actualizeaza constant cand selectez un item,
-    iar in dreapta o sa fie toate optiunile de personalizare (adica dressing ul)
-        - o sa am un buton de salvare care sa salveze avatarul personalizat
-        - o sa am un buton de resetare care sa reseteze avatarul la starea initiala
-*@
-
-@{
+﻿@{
     ViewData["Title"] = "Personalizare Avatar";
     var avatarId = ViewBag.AvatarId;
 }
 
+@if (TempData["Achievement"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Achievement"]
+    </div>
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["message"]
+    </div>
+}
+
+
 <h2>Personalizează-ți avatarul</h2>
 
+<body>
+
+    <div id="assistantBubble" style="
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #f7b1c1;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+">
+    <img src="/images/asistent-icon.png" alt="Asistent" style="width: 50px; height: 50px;">
+</div>
+
+<!-- Norul de gandire -->
+<div id="assistantTooltip" style="
+    display: none;
+    position: fixed;
+    bottom: 110px;
+    left: 20px;
+    background-color: #f3e7fd;
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+    font-size: 14px;
+    max-width: 200px;
+">
+    <div style="margin-bottom: 8px;">Ai nevoie de idei pentru un look reușit? Vorbește cu asistentul!</div>
+    <div style="display: flex; gap: 5px; justify-content: flex-end;">
+        <div style="width: 8px; height: 8px; background: #FF69B4; border-radius: 50%;"></div>
+        <div style="width: 8px; height: 8px; background: #FF69B4; border-radius: 50%;"></div>
+        <div style="width: 8px; height: 8px; background: #FF69B4; border-radius: 50%;"></div>
+    </div>
+</div>
+
+<div id="assistantModal" style="
+    display: none;
+    position: fixed;
+    bottom: 110px;
+    left: 20px;
+    width: 300px;
+    background: #f3e7fd;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    padding: 15px;
+    z-index: 10000;
+">
+    <h6>Asistent Virtual 💬 </h6>
+    <textarea id="assistantInput" style="width: 100%; height: 60px;"></textarea>
+    <button id="sendAssistantMessage" style="margin-top: 8px; padding: 8px 14px; background-color: #FF69B4; color: white; border: none; border-radius: 5px;">Trimite</button>
+    <div id="assistantResponse" class="chat-log" style="margin-top: 10px; min-height: 50px;"></div>
+
+</div>
+
+@*<div id="assistantResponse" class="chat-log" style="margin-top: 10px; min-height: 200px; max-height: 300px; overflow-y: auto; background-color: #fff; border: 1px solid #000; padding: 8px; border-radius: 5px;"></div>*@
+
+</body>
+
 <style>
+
     .container {
         display: flex;
         justify-content: space-between;
@@ -31,6 +106,63 @@
         width: 400px;
         height: 650px;
         border: 1px solid gray;
+    }
+
+    /*#assistantResponse {
+        margin-top: 10px;
+        min-height: 50px;
+        max-height: 200px; 
+        overflow-y: auto;
+        background-color: #fff;
+        border: 1px solid #000;
+        padding: 8px;
+        border-radius: 5px;
+    }*/
+
+    #assistantResponse {
+    display: flex;
+    flex-direction: column;
+    height: 300px;        
+    overflow-y: auto;    
+    border: 1px solid #ccc; 
+    padding: 10px;         
+    background-color: #fafafa; 
+}
+
+    #assistantResponse::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #assistantResponse::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #assistantResponse::-webkit-scrollbar-thumb {
+        background-color: #ff69b4;
+        border-radius: 3px;
+        border: 1px solid transparent;
+    }
+
+    #assistantResponse::-webkit-scrollbar-thumb:hover {
+        background: #ff4081;
+    }
+
+     #assistantInput::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #assistantInput::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #assistantInput::-webkit-scrollbar-thumb {
+        background-color: #ff69b4;
+        border-radius: 3px;
+        border: 1px solid transparent;
+    }
+
+    #assistantInput::-webkit-scrollbar-thumb:hover {
+        background: #ff4081;
     }
 
     .wardrobe-zone {
@@ -88,6 +220,61 @@
             .clothes-display img:hover {
                 transform: scale(1.1);
             }
+
+    .loader {
+        display: inline-block;
+        text-align: center;
+        width: 40px;
+    }
+
+    .loader span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin: 0 2px;
+        background: #ff4081;
+        border-radius: 50%;
+        animation: loaderBounce 1.4s infinite ease-in-out both;
+    }
+
+    .loader span:nth-child(1) {
+        animation-delay: -0.32s;
+    }
+
+    .loader span:nth-child(2) {
+        animation-delay: -0.16s;
+    }
+
+    keyframes loaderBounce {
+        0%, 80%, 100% 
+        {
+        transform: scale(0);
+        }
+    40% {
+        transform: scale(1);
+        }
+    }
+
+    .chat-message {
+        padding: 6px 10px;
+        margin-bottom: 6px;
+        border-radius: 10px;
+        max-width: 90%;
+        word-wrap: break-word;
+    }
+
+    .user-message {
+        background-color: #f7b1c1;
+        align-self: flex-end;
+    }
+
+    .assistant-message {
+        background-color: #f3e7fd;
+        align-self: flex-start;
+    }
+
+
+
 </style>
 
 <div class="container">
@@ -105,7 +292,7 @@
 
     <!-- Dulap -->
     <div class="wardrobe-zone">
-        <!-- Butoane cu iconițe categorii -->
+        <!-- Butoane cu iconite categorii -->
         <div class="category-icons">
             <img src="/images/icons/tops.png" onclick="loadCategory('tops')" title="TOPS">
             <img src="/images/icons/pants.png" onclick="loadCategory('pants')" title="PANTS">
@@ -117,7 +304,6 @@
 
         <!-- Haine -->
         <div class="clothes-display" id="wardrobe-items">
-            <!-- Hainele se încarcă dinamic aici -->
         </div>
     </div>
 </div>
@@ -140,10 +326,10 @@
             "dresses3": { x: 60, y: 150, w: 290, h: 400 },
             "dresses4": { x: 7, y: 122, w: 390, h: 530 },
 
-            "shoes1": { x: 140, y: 600, w: 100, h: 80 },
-            "shoes2": { x: 140, y: 600, w: 100, h: 80 },
-            "shoes3": { x: 152, y: 585, w: 97, h: 80 },
-            "shoes4": { x: 140, y: 600, w: 100, h: 80 },
+            "shoes1": { x: 150, y: 580, w: 106, h: 110 },
+            "shoes2": { x: 150, y: 580, w: 100, h: 110 },
+            "shoes3": { x: 150, y: 577, w: 103, h: 100 },
+            "shoes4": { x: 150, y: 580, w: 103, h: 90 },
 
             "hair1": { x: 112, y: 22, w: 170, h: 235 },
             "hair2": { x: 136, y: 22, w: 125, h: 180 },
@@ -166,7 +352,7 @@
             accessories: null
         };
 
-        const Categories = ['base', 'dresses', 'pants', 'tops', 'shoes', 'hair', 'accessories'];
+        const Categories = ['base','shoes', 'dresses', 'pants', 'tops', 'hair', 'accessories'];
 
         function drawAvatar() {
             const canvas = document.getElementById("avatarCanvas");
@@ -205,9 +391,15 @@
                 layers["pants"] = null;
             }
 
-            // Dacă alegi top sau pants => scoate rochia
+            // top sau pants => scoate rochia
             if (categ === "tops" || categ === "pants") {
                 layers["dresses"] = null;
+            }
+
+            if (categ === "shoes") {
+                const index = imageName.replace("shoes", "");
+                imagePath = `/images/shoes/${index}.png`;  
+                imageName = `shoes${index}`;
             }
 
             layers[categ] = { path: imagePath, name: imageName };
@@ -216,7 +408,7 @@
 
         function loadCategory(category) {
             const folderPath = `/images/${category}/`;
-            const imageCount = 4; // număr estimativ, ajustează dacă ai mai multe
+            const imageCount = 4; 
             const wardrobe = document.getElementById("wardrobe-items");
             wardrobe.innerHTML = '';
 
@@ -252,6 +444,134 @@
         window.onload = () => {
             resetAvatar();
         };
+
+
+        // La hover pe bula roz → arata norul de gândire
+        document.getElementById("assistantBubble").addEventListener("mouseenter", function () 
+        {
+            document.getElementById("assistantTooltip").style.display = "block";
+        });
+
+        // ascunde norul
+        document.getElementById("assistantBubble").addEventListener("mouseleave", function () 
+        {
+            document.getElementById("assistantTooltip").style.display = "none";
+        });
+
+        // La click pe bula roz → toggle la fereastra de dialog
+        document.getElementById("assistantBubble").addEventListener("click", function ()
+        {
+            const modal = document.getElementById("assistantModal");
+                if (modal.style.display === "none" || modal.style.display === "") 
+                    modal.style.display = "block";
+                else 
+                    modal.style.display = "none";
+        });
+
+        /*
+        // Trimite mesaj si preia raspuns
+        document.getElementById("sendAssistantMessage").addEventListener("click", function () {
+            const message = document.getElementById("assistantInput").value;
+            const responseContainer = document.getElementById("assistantResponse");
+
+            if (!message.trim()) return;
+
+             // Adaugă loader
+             const loader = document.createElement("div");
+            loader.className = "loader";
+            loader.innerHTML = "<span></span><span></span><span></span>";
+            responseContainer.appendChild(loader);
+
+            // Resetare input
+            document.getElementById("assistantInput").value = "";
+
+
+            // Trimitere AJAX reală la controller
+            fetch('/api/Chatbot/AskAssistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(message)
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Șterge loaderul
+                responseContainer.removeChild(loader);
+
+                // Adauga răspunsul primit de la API
+                const responseDiv = document.createElement("div");
+                responseDiv.textContent = data;
+                responseDiv.style.marginBottom = "8px";
+
+                responseContainer.appendChild(responseDiv);
+                responseContainer.scrollTop = responseContainer.scrollHeight;
+            })
+
+            .catch(error => {
+                responseContainer.removeChild(loader);
+                const errorDiv = document.createElement("div");
+                errorDiv.textContent = "Eroare la asistent.";
+                responseContainer.appendChild(errorDiv);
+            });
+
+        });*/
+
+        document.getElementById("sendAssistantMessage").addEventListener("click", function () {
+            const message = document.getElementById("assistantInput").value;
+            const responseContainer = document.getElementById("assistantResponse");
+
+            if (!message.trim()) return;
+
+            // Adauga intrebarea utilizatorului in chat
+            const userMessageDiv = document.createElement("div");
+            userMessageDiv.className = "chat-message user-message";
+            userMessageDiv.textContent = "👤 " + message;
+            responseContainer.appendChild(userMessageDiv);
+
+            // Adauga loader
+            const loader = document.createElement("div");
+            loader.className = "loader";
+            loader.innerHTML = "<span></span><span></span><span></span>";
+            responseContainer.appendChild(loader);
+
+            // Reset input
+            document.getElementById("assistantInput").value = "";
+
+            // Trimitere AJAX la controller
+            fetch('/api/Chatbot/AskAssistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(message)
+            })
+            .then(response => response.text())
+            .then(data => {
+                // sterge loaderul
+                responseContainer.removeChild(loader);
+
+                // Adauga raspunsul asistentului in chat
+                const assistantMessageDiv = document.createElement("div");
+                assistantMessageDiv.className = "chat-message assistant-message";
+                assistantMessageDiv.textContent = "🤖 " + data;
+                responseContainer.appendChild(assistantMessageDiv);
+
+                // Scroll la ultimul mesaj
+                responseContainer.scrollTop = responseContainer.scrollHeight;
+            })
+            .catch(error => {
+                responseContainer.removeChild(loader);
+                const errorDiv = document.createElement("div");
+                errorDiv.className = "chat-message assistant-message";
+                errorDiv.textContent = "Eroare la asistent.";
+                responseContainer.appendChild(errorDiv);
+            });
+        });
+
+        document.getElementById("assistantInput").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // ← prevenire newline
+                document.getElementById("sendAssistantMessage").click();
+            }
+        });
+
 
     </script>
 }

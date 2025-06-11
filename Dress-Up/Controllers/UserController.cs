@@ -12,19 +12,18 @@ public class UserController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly AchievementService _achievementService;
 
-    public UserController(ApplicationDbContext context, UserManager<User> userManager)
+    public UserController(ApplicationDbContext context, UserManager<User> userManager, AchievementService achievementService)
     {
         _context = context;
         _userManager = userManager;
+        _achievementService = achievementService;
     }
-
-    public IActionResult Index(string id)
+    public async Task<IActionResult> Index(string id)
     {
-        
-
         var userId = _userManager.GetUserId(User);
-        var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
         if (TempData.ContainsKey("message"))
         {
@@ -36,39 +35,29 @@ public class UserController : Controller
             return NotFound();
         }
 
-        var messages = _context.AlertMessages
-                   .Where(m => m.UserId == user.Id && !m.IsRead)
-                   .OrderByDescending(m => m.SentAt)
-                   .ToList();
+        // Așteptăm rezultatul corect
+        var achievements = await _achievementService.GetUserAchievementsAsync(userId);
+        ViewBag.UserAchievements = achievements;
 
-        ViewBag.AlertMessages = messages;
+        IQueryable<Outfit> UserOutfitsQuery;
 
-        if (User.IsInRole("Admin"))
-        {
-            var allUsers = _context.Users.ToList();
-            ViewBag.AllUsers = allUsers;
-        }
-
-        //daca este contul propriu sau admin afisez si categoriile private
         if (userId == id || User.IsInRole("Admin"))
         {
-            var UserOutfits = _context.Outfits.Where(u => u.User.Id == id);
-            ViewBag.UserOutfits = UserOutfits;
-            ViewBag.AfisareButoane = true; //pentru a sti daca afisez butoanele de editare sau nu
-            return View(user);
+            UserOutfitsQuery = _context.Outfits.Where(u => u.User.Id == id);
+            ViewBag.AfisareButoane = true;
         }
         else
         {
-            var UserOutfits = _context.Outfits.Where(u => u.User.Id == id && u.IsPublic == true);
-            ViewBag.UserOutfits = UserOutfits;
+            UserOutfitsQuery = _context.Outfits.Where(u => u.User.Id == id && u.IsPublic == true);
             ViewBag.AfisareButoane = false;
-
-            return View(user);
         }
 
+        var userOutfits = await UserOutfitsQuery.ToListAsync();
+        ViewBag.UserOutfits = userOutfits;
 
-
+        return View(user);
     }
+
 
     public IActionResult PublicaOutfit(int id)
     {

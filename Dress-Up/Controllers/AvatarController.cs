@@ -8,8 +8,9 @@ using System.Text.RegularExpressions;
 namespace Dress_Up.Controllers;
 
 
-public class AvatarController(ApplicationDbContext context, UserManager<User> userManager) : Controller
+public class AvatarController(ApplicationDbContext context, UserManager<User> userManager, AchievementService achievementService) : Controller
 {
+    private readonly AchievementService _achievementService= achievementService;
     private readonly ApplicationDbContext _context = context;
     private readonly UserManager<User> _userManager = userManager;
 
@@ -59,7 +60,7 @@ public class AvatarController(ApplicationDbContext context, UserManager<User> us
     }
 
     [HttpPost]
-    public IActionResult Save([FromBody] string imageBase64)
+    public async Task<IActionResult> Save([FromBody] string imageBase64)
     {
         if (string.IsNullOrEmpty(imageBase64))
             return BadRequest("Imaginea lipseste.");
@@ -84,6 +85,24 @@ public class AvatarController(ApplicationDbContext context, UserManager<User> us
         user.Outfits.Add(outfit); //adaug outfit ul in colectia user ului
         _context.SaveChanges(); // aici se generează Id-ul
 
+        var outfitCount = await context.Outfits.CountAsync(o => o.User.Id == user.Id);
+
+        if (outfitCount == 1)
+        {
+            var achievement = await _achievementService.AddAchievementToUser(user.Id, "FIRST_OUTFIT");
+            if (achievement != null)
+            {
+                TempData["AchievementMessage"] = "Felicitări! Ai creat primul tău outfit!";
+            }
+        }
+        else if (outfitCount == 5)
+        {
+            var achievement = await _achievementService.AddAchievementToUser(user.Id, "FIVE_OUTFITS");
+            if (achievement != null)
+            {
+                TempData["AchievementMessage"] = "Felicitări! Ai creat 5 outfituri!";
+            }
+        }
 
         return Ok(new { imagePath = $"/avatars/{fileName}" });
     }

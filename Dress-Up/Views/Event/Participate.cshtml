@@ -10,6 +10,13 @@
         @TempData["message"]
     </div>
 }
+@if (TempData["Achievement"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Achievement"]
+    </div>
+}
+
 
 
 @if (Model == null || !Model.Any())
