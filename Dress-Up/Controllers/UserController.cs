@@ -37,6 +37,20 @@ public class UserController : Controller
             return NotFound();
         }
 
+        var messages = _context.AlertMessages
+             .Where(m => m.UserId == user.Id && !m.IsRead)
+             .OrderByDescending(m => m.SentAt)
+             .ToList();
+
+        ViewBag.AlertMessages = messages;
+
+        if (User.IsInRole("Admin"))
+        {
+            var allUsers = _context.Users.ToList();
+            ViewBag.AllUsers = allUsers;
+        }
+
+
         // Așteptăm rezultatul corect
         var achievements = await _achievementService.GetUserAchievementsAsync(userId);
         ViewBag.UserAchievements = achievements;
