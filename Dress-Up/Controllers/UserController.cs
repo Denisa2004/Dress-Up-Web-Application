@@ -1,288 +1,228 @@
 ﻿using Dress_Up.Data;
-using Dress_Up.Migrations;
 using Dress_Up.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 using OutfitUser = Dress_Up.Models.OutfitUser;
 
-namespace Dress_Up.Controllers;
-
-public class UserController : Controller
+namespace Dress_Up.Controllers
 {
-    private readonly ApplicationDbContext _context;
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly AchievementService _achievementService;
-
-    public UserController(ApplicationDbContext context, UserManager<User> userManager, SignInManager<User> signInManager , AchievementService achievementService)
+    public class UserController : Controller
     {
-        _context = context;
-        _userManager = userManager;
-        _achievementService = achievementService;
-        _signInManager = signInManager;
-    }
-    public async Task<IActionResult> Index(string id)
-    {
-        var userId = _userManager.GetUserId(User);
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly AchievementService _achievementService;
 
-        if (TempData.ContainsKey("message"))
+        public UserController(
+            ApplicationDbContext context,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            AchievementService achievementService)
         {
-            ViewBag.Msg = TempData["message"].ToString();
+            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _achievementService = achievementService;
         }
 
-        if (user == null)
+        // ----------------------------------------------------
+        //                   PROFIL / INDEX
+        // ----------------------------------------------------
+        public async Task<IActionResult> Index(string id)
         {
-            return NotFound();
-        }
-         var messages = _context.AlertMessages
-             .Where(m => m.UserId == user.Id && !m.IsRead)
-             .OrderByDescending(m => m.SentAt)
-             .ToList();
+            var currentUserId = _userManager.GetUserId(User);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-         ViewBag.AlertMessages = messages;
+            if (user is null) return NotFound();
 
-         if (User.IsInRole("Admin"))
-         {
-             var allUsers = _context.Users.ToList();
-             ViewBag.AllUsers = allUsers;
-         }
+            // Mesaje alerta necitite pentru profilul vizitat
+            var messages = _context.AlertMessages
+                                   .Where(m => m.UserId == user.Id && !m.IsRead)
+                                   .OrderByDescending(m => m.SentAt)
+                                   .ToList();
 
-        var messages = _context.AlertMessages
-             .Where(m => m.UserId == user.Id && !m.IsRead)
-             .OrderByDescending(m => m.SentAt)
-             .ToList();
+            ViewBag.AlertMessages = messages;
 
-        ViewBag.AlertMessages = messages;
-
-        if (User.IsInRole("Admin"))
-        {
-            var allUsers = _context.Users.ToList();
-            ViewBag.AllUsers = allUsers;
-        }
-
-
-        // Așteptăm rezultatul corect
-        var achievements = await _achievementService.GetUserAchievementsAsync(userId);
-        ViewBag.UserAchievements = achievements;
-
-        IQueryable<Outfit> UserOutfitsQuery;
-
-        if (userId == id || User.IsInRole("Admin"))
-        {
-            var UserOutfits = _context.Outfits.Where(u => u.User.Id == id);
-            var all = _context.Outfits.ToList();
-            ViewBag.AllOutfits = all;
-            ViewBag.UserOutfits = UserOutfits;
-            ViewBag.AfisareButoane = true; //pentru a sti daca afisez butoanele de editare sau nu
-            ViewBag.Admin = User.IsInRole("Admin");
-            var savedOutfits = _context.OutfitUsers
-                .Where(u => u.UserId == id);
-
-
-            ViewBag.SavedUOutfits = savedOutfits;
-            return View(user);
-            UserOutfitsQuery = _context.Outfits.Where(u => u.User.Id == id);
-            ViewBag.AfisareButoane = true;
-        }
-        else
-        {
-            UserOutfitsQuery = _context.Outfits.Where(u => u.User.Id == id && u.IsPublic == true);
-            ViewBag.AfisareButoane = false;
-        }
-
-        var userOutfits = await UserOutfitsQuery.ToListAsync();
-        ViewBag.UserOutfits = userOutfits;
-
-        return View(user);
-    }
-
-
-    public IActionResult PublicaOutfit(int id)
-    {
-        var outfit = _context.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
-        if (outfit != null)
-        {
-            outfit.IsPublic = true;
-            _context.SaveChanges();
-            TempData["message"] = "Outfit-ul a fost publicat cu succes!";
-        }
-        else
-        {
-            TempData["message"] = "Outfit-ul nu a fost gasit!";
-        }
-        return Redirect("/User/Index/" + outfit!.User!.Id);
-    }
-
-    [HttpGet]
-   /* [Authorize(Roles = "Admin,User")]*/
-    public async Task<IActionResult> Edit()
-    {
-        var userId = _userManager.GetUserId(User);
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        return View(user);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-   // [Route("User/Edit")]
-    public async Task<IActionResult> Edit(User model)
-    {
-        Console.WriteLine("MODEL ID: " + model.Id);
-
-        if (ModelState.IsValid)
-        {
-            var user = await _userManager.FindByIdAsync(model.Id);
-
-            if (user == null)
+            // Dacă e Admin, trimite toți userii în ViewBag
+            if (User.IsInRole("Admin"))
             {
-                return NotFound();
+                ViewBag.AllUsers = _context.Users.ToList();
             }
 
+            // Afișare realizări user curent (dacă vizitează propriul profil)
+            var achievements = await _achievementService.GetUserAchievementsAsync(currentUserId);
+            ViewBag.UserAchievements = achievements;
+
+            // Ce outfit-uri afișăm?
+            IQueryable<Outfit> outfitsQuery;
+            bool selfOrAdmin = currentUserId == id || User.IsInRole("Admin");
+
+            if (selfOrAdmin)
+            {
+                outfitsQuery = _context.Outfits.Where(o => o.User.Id == id);
+                ViewBag.AfisareButoane = true;
+            }
+            else
+            {
+                outfitsQuery = _context.Outfits.Where(o => o.User.Id == id && o.IsPublic);
+                ViewBag.AfisareButoane = false;
+            }
+
+            ViewBag.UserOutfits = await outfitsQuery.ToListAsync();
+
+            // Outfits salvate (doar proprietar)
+            if (selfOrAdmin)
+            {
+                var saved = _context.OutfitUsers.Where(ou => ou.UserId == id).ToList();
+                ViewBag.SavedUOutfits = saved;
+                ViewBag.AllOutfits = _context.Outfits.ToList();
+            }
+
+            // Mesaje flash
+            if (TempData.ContainsKey("message"))
+                ViewBag.Msg = TempData["message"]!.ToString();
+
+            ViewBag.Admin = User.IsInRole("Admin");
+            return View(user);
+        }
+
+        // ----------------------------------------------------
+        //                PUBLICĂ UN OUTFIT
+        // ----------------------------------------------------
+        public IActionResult PublicaOutfit(int id)
+        {
+            var outfit = _context.Outfits.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+            if (outfit == null)
+            {
+                TempData["message"] = "Outfit-ul nu a fost găsit!";
+                return RedirectToAction("Index", new { id = _userManager.GetUserId(User) });
+            }
+
+            outfit.IsPublic = true;
+            _context.SaveChanges();
+
+            TempData["message"] = "Outfit-ul a fost publicat cu succes!";
+            return RedirectToAction("Index", new { id = outfit.User.Id });
+        }
+
+        // ----------------------------------------------------
+        //                EDITARE PROFIL
+        // ----------------------------------------------------
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return user == null ? NotFound() : View(user);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(User model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null) return NotFound();
 
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.About = model.About;
             user.ProfilePictureUrl = model.ProfilePictureUrl;
 
-            // Actualizează utilizatorul în baza de date
             var result = await _userManager.UpdateAsync(user);
-
             if (result.Succeeded)
+                return RedirectToAction("Index", new { id = user.Id });
+
+            foreach (var err in result.Errors) ModelState.AddModelError(string.Empty, err.Description);
+            return View(model);
+        }
+
+        // ----------------------------------------------------
+        //    ADMIN - add/remove role
+        // ----------------------------------------------------
+        [HttpPost]
+        public async Task<IActionResult> MakeAdmin(string id)
+            => await ToggleAdmin(id, add: true);
+
+        [HttpPost]
+        public async Task<IActionResult> RmvAdmin(string id)
+            => await ToggleAdmin(id, add: false);
+
+        private async Task<IActionResult> ToggleAdmin(string id, bool add)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
             {
-                return RedirectToAction("Index", "User", new { id = user.Id });
+                TempData["Error"] = "Utilizatorul nu a fost găsit.";
+                return RedirectToAction("Index");
             }
 
-            else
+            IdentityResult result = add
+                ? await _userManager.AddToRoleAsync(user, "Admin")
+                : await _userManager.RemoveFromRoleAsync(user, "Admin");
+
+            if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                TempData["Error"] = add
+                    ? "Nu s-a putut adăuga rolul de admin."
+                    : "Nu s-a putut șterge rolul de admin.";
+                return RedirectToAction("Index", new { id });
             }
+
+            TempData["Success"] = add
+                ? "Utilizatorul a devenit admin!"
+                : "Utilizatorul nu mai are rol de admin!";
+
+            if (!add && user.Id == _userManager.GetUserId(User))
+                await _signInManager.RefreshSignInAsync(user);
+
+            return RedirectToAction("Index", new { id });
         }
 
-        return View(model);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> MakeAdmin(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null)
+        // ----------------------------------------------------
+        //            SALVEAZĂ / UNSAVE OUTFIT
+        // ----------------------------------------------------
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveOutfit(int id)
         {
-            TempData["Error"] = "Utilizatorul nu a fost găsit.";
-            return RedirectToAction("Index");
-        }
+            var userId = _userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
 
-        var result = await _userManager.AddToRoleAsync(user, "Admin");
+            if (await _context.OutfitUsers.AnyAsync(ou => ou.UserId == userId && ou.OutfitId == id))
+            {
+                TempData["message"] = "Ai salvat deja acest outfit!";
+                return RedirectToAction("Index", new { id = userId });
+            }
 
-        if (!result.Succeeded)
-        {
-            TempData["Error"] = "Nu s-a putut adăuga rolul de admin.";
-            return RedirectToAction("Index", "User", new { id = user.Id });
-        }
+            _context.OutfitUsers.Add(new OutfitUser { UserId = userId, OutfitId = id });
+            await _context.SaveChangesAsync();
 
-        TempData["Success"] = "Utilizatorul a devenit admin!";
-
-        return RedirectToAction("Index", "User", new { id = user.Id });
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> RmvAdmin(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null)
-        {
-            TempData["Error"] = "Utilizatorul nu a fost găsit.";
-            return RedirectToAction("Index");
-        }
-
-        var result = await _userManager.RemoveFromRoleAsync(user, "Admin");
-
-
-        if (!result.Succeeded)
-        {
-            TempData["Error"] = "Nu s-a putut sterge rolul de admin.";
-            return RedirectToAction("Index", "User", new { id = user.Id });
-        }
-
-        TempData["Success"] = "Utilizatorul nu mai are rol de admin!";
-        if (user.Id == _userManager.GetUserId(User))
-            await _signInManager.RefreshSignInAsync(user); //daca userul curent este admin si isi sterge rolul, nu mai afisez butoanele pt rol
-
-        return RedirectToAction("Index", "User", new { id = user.Id });
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SaveOutfit(int id)
-    {
-        // obtin userul
-        var userId = _userManager.GetUserId(User);
-        if (userId == null)
-            return Unauthorized();
-
-        // verif dacă outfit-ul există
-        var outfit = await _context.Outfits.FindAsync(id);
-        if (outfit == null)
-            return NotFound();
-
-        // verif dacă outfit-ul e deja salvat de user
-        var alreadySaved = await _context.Set<OutfitUser>()
-            .AnyAsync(ou => ou.UserId == userId && ou.OutfitId == id);
-
-        if (alreadySaved)
-        {
-            TempData["message"] = "Ati salvat deja acest outfit!";
+            TempData["message"] = "Outfit salvat!";
             return RedirectToAction("Index", new { id = userId });
         }
 
-        // relatia de salvare
-        var outfitUser = new OutfitUser
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnsaveOutfit(int id)
         {
-            UserId = userId,
-            OutfitId = id,
-        };
+            var userId = _userManager.GetUserId(User);
+            var link = await _context.OutfitUsers
+                                       .FirstOrDefaultAsync(ou => ou.UserId == userId && ou.OutfitId == id);
 
-        _context.OutfitUsers.Add(outfitUser);
-        await _context.SaveChangesAsync();
+            if (link != null)
+            {
+                _context.OutfitUsers.Remove(link);
+                await _context.SaveChangesAsync();
+                TempData["message"] = "Outfit-ul a fost eliminat din lista ta.";
+            }
+            else
+            {
+                TempData["message"] = "Outfit-ul nu se găsește în lista ta.";
+            }
 
-        TempData["message"] = "Outfit salvat!";
-        return RedirectToAction("Index", new { id = userId });
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UnsaveOutfit(int id)
-    {
-        var userId = _userManager.GetUserId(User);
-
-        var outfitUser = await _context.OutfitUsers
-            .FirstOrDefaultAsync(ou => ou.UserId == userId && ou.OutfitId == id);
-
-        if (outfitUser != null)
-        {
-            _context.OutfitUsers.Remove(outfitUser);
-            await _context.SaveChangesAsync();
-            TempData["message"] = "Outfit-ul a fost eliminat din lista ta.";
+            return RedirectToAction("Index", new { id = userId });
         }
-        else
-        {
-            TempData["message"] = "Outfit-ul nu a fost găsit în lista ta.";
-        }
-
-        return RedirectToAction("Index", new { id = userId });
     }
-
-
 }

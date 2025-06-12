@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dress_Up.Migrations
 {
     /// <inheritdoc />
-    public partial class Rebuild : Migration
+    public partial class migratie : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -334,6 +334,30 @@ namespace Dress_Up.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OutfitUsers",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OutfitId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OutfitUsers", x => new { x.UserId, x.OutfitId });
+                    table.ForeignKey(
+                        name: "FK_OutfitUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OutfitUsers_Outfits_OutfitId",
+                        column: x => x.OutfitId,
+                        principalTable: "Outfits",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserEvents",
                 columns: table => new
                 {
@@ -469,6 +493,11 @@ namespace Dress_Up.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OutfitUsers_OutfitId",
+                table: "OutfitUsers",
+                column: "OutfitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserAchievements_AchievementId",
                 table: "UserAchievements",
                 column: "AchievementId");
@@ -533,6 +562,9 @@ namespace Dress_Up.Migrations
 
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "OutfitUsers");
 
             migrationBuilder.DropTable(
                 name: "UserAchievements");

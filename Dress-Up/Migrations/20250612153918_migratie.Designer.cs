@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dress_Up.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250612001957_OutfitUser")]
-    partial class OutfitUser
+    [Migration("20250612153918_migratie")]
+    partial class migratie
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
