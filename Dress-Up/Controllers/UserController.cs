@@ -224,5 +224,89 @@ namespace Dress_Up.Controllers
 
             return RedirectToAction("Index", new { id = userId });
         }
+
+        //stergerea contului de utilizator sau de catre admin
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult Delete(string id)
+        {
+            var user = _context.Users
+                         .Where(u => u.Id == id)
+                         .First();
+
+            // Delete user comments
+
+            var comments = _context.Comments.Where(u => u.UserId == id);
+            foreach (var comment in comments)
+            {
+                var outfits = _context.Outfits.Where(u => u.Id == comment.OutfitId);
+                foreach (var o in outfits)
+                {
+                    o.Comments.Remove(comment);
+                }
+                _context.Comments.Remove(comment);
+            }
+
+            //Delete user votes
+            var votes = _context.Votes.Where(u => u.UserId == id);
+            foreach (var vote in votes)
+            {
+                var outfits = _context.Outfits.Where(u => u.Id == vote.OutfitId);
+                foreach (var o in outfits)
+                {
+                    o.Votes.Remove(vote);
+                }
+                _context.Votes.Remove(vote);
+            }
+
+            // Delete user outfits
+            var outf = _context.Outfits.Where(u => u.User!.Id == id);
+            foreach (var o in outf)
+            {
+                //delete outfot comments
+                var bcomments = _context.Comments.Where(u => u.OutfitId == o.Id);
+                foreach (var comment in bcomments)
+                {
+                    _context.Comments.Remove(comment);
+                }
+
+                //delete outfit votes
+                var bvotes = _context.Votes.Where(u => u.OutfitId == o.Id);
+                foreach (var vote in bvotes)
+                {
+                    _context.Votes.Remove(vote);
+                }
+
+                //delete relatia din outfitUser
+                var otss = _context.OutfitUsers.Where(u => u.OutfitId == o.Id);
+                foreach (var legatura in otss)
+                {
+                    _context.OutfitUsers.Remove(legatura);
+                }
+                _context.Outfits.Remove(o);
+            }
+
+            // Delete saved outfits
+            var ots = _context.OutfitUsers.Where(u => u.UserId == id);
+            foreach (var legatura in ots)
+            {
+                _context.OutfitUsers.Remove(legatura);
+            }
+
+            var logout = string.Equals(id, _userManager.GetUserId(User));
+
+            _context.Users.Remove(user);
+
+            _context.SaveChanges();
+
+            if (logout)
+            {
+                _signInManager.SignOutAsync(); //delogare dupa stergerea contului 
+
+            }
+
+
+            return RedirectToAction("Index", "Avatar");
+        }
     }
 }
