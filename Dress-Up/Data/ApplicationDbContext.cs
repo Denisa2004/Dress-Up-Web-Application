@@ -22,6 +22,8 @@ namespace Dress_Up.Data
         public DbSet<UserEvent> UserEvents { get; set; }
 
         public DbSet<AlertMessage> AlertMessages { get; set; }
+        public DbSet<OutfitUser> OutfitUsers { get; set; }
+
 
 
 
@@ -68,6 +70,19 @@ namespace Dress_Up.Data
                 .HasOne(ua => ua.Achievement)
                 .WithMany(a => a.UserAchievements)
                 .HasForeignKey(ua => ua.AchievementId);
+
+            modelBuilder.Entity<OutfitUser>()
+                .HasKey(ou => new { ou.UserId, ou.OutfitId });
+    
+            modelBuilder.Entity<OutfitUser>()
+                .HasOne(ou => ou.User)
+                .WithMany(u => u.SavedOutfits)
+                .HasForeignKey(ou => ou.UserId);
+
+            modelBuilder.Entity<OutfitUser>()
+                .HasOne(ou => ou.Outfit)
+                .WithMany(o => o.SavedByUsers)
+                .HasForeignKey(ou => ou.OutfitId);
         }
 
     }

@@ -15,5 +15,7 @@ namespace Dress_Up.Models
 
         public ICollection<Vote> Votes { get; set; } = new List<Vote>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+        public ICollection<OutfitUser>? SavedByUsers { get; set; } // utilizatorii care au salvat acest outfit
     }
 }

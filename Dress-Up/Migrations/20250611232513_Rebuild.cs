@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dress_Up.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialSync : Migration
+    public partial class Rebuild : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -126,6 +126,28 @@ namespace Dress_Up.Migrations
                         column: x => x.EventId,
                         principalTable: "Events",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AlertMessages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AlertMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AlertMessages_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -378,6 +400,11 @@ namespace Dress_Up.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AlertMessages_UserId",
+                table: "AlertMessages",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -480,6 +507,9 @@ namespace Dress_Up.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AlertMessages");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

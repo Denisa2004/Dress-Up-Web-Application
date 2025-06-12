@@ -22,11 +22,7 @@ namespace Dress_Up.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Dress_Up.Models.AlertMessage", b =>
-=======
             modelBuilder.Entity("Dress_Up.Models.Achievement", b =>
->>>>>>> bbd889939a39576f0e5f1d46121bd99e92871098
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,27 +30,6 @@ namespace Dress_Up.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-<<<<<<< HEAD
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AlertMessages");
-=======
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -74,7 +49,35 @@ namespace Dress_Up.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Achievements");
->>>>>>> bbd889939a39576f0e5f1d46121bd99e92871098
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.AlertMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AlertMessages");
                 });
 
             modelBuilder.Entity("Dress_Up.Models.Avatar", b =>
@@ -222,6 +225,21 @@ namespace Dress_Up.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Outfits");
+                });
+
+            modelBuilder.Entity("Dress_Up.Models.OutfitUser", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("OutfitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "OutfitId");
+
+                    b.HasIndex("OutfitId");
+
+                    b.ToTable("OutfitUsers");
                 });
 
             modelBuilder.Entity("Dress_Up.Models.User", b =>
@@ -567,6 +585,25 @@ namespace Dress_Up.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Dress_Up.Models.OutfitUser", b =>
+                {
+                    b.HasOne("Dress_Up.Models.Outfit", "Outfit")
+                        .WithMany("SavedByUsers")
+                        .HasForeignKey("OutfitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dress_Up.Models.User", "User")
+                        .WithMany("SavedOutfits")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Outfit");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Dress_Up.Models.User", b =>
                 {
                     b.HasOne("Dress_Up.Models.Event", null)
@@ -717,6 +754,8 @@ namespace Dress_Up.Migrations
 
                     b.Navigation("Comments");
 
+                    b.Navigation("SavedByUsers");
+
                     b.Navigation("Votes");
                 });
 
@@ -725,6 +764,8 @@ namespace Dress_Up.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Outfits");
+
+                    b.Navigation("SavedOutfits");
 
                     b.Navigation("UserAchievements");
 

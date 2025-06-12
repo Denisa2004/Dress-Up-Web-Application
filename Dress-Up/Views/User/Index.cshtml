@@ -4,6 +4,20 @@
     ViewData["Title"] = "Profilul Meu";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Error"]
+    </div>
+}
+
+
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -134,7 +148,17 @@
                     <div class="text-end mt-3">
                         <a href="@Url.Action("Edit", "User", new { id = @Model.Id })" class="btn btn-danger">Edit Profile</a>
                     </div>
+                    @if (ViewBag.Admin)
+                    {
+                        <form asp-action="MakeAdmin" asp-controller="User" asp-route-id="@Model.Id" method="post" class="mt-2" onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="btn btn-danger">Give Admin Role</button>
+                        </form>
+                        <form asp-action="RmvAdmin" asp-controller="User" asp-route-id="@Model.Id" method="post" class="mt-2" onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="btn btn-danger">Delete Admin Role</button>
+                        </form>
+                    }
                 }
+                
             </div>
         </div>
     </div>
@@ -206,7 +230,7 @@
 
 <div class="row">
     <div class="col-12">
-        <h3 class="mt-4">My Saved Outfits</h3>
+        <h3 class="mt-4">My Own Outfits</h3>
 
         @if (ViewBag.UserOutfits != null)
         {
@@ -237,8 +261,51 @@
         }
         else
         {
-            <p>Nu ai salvat niciun outfit încă.</p>
+            <p>Nu ai niciun outfit încă.</p>
         }
     </div>
 </div>
 
+
+@{
+    var allOutfits = ViewBag.AllOutfits as List<Outfit>;
+}
+
+@if(ViewBag.AfisareButoane)
+{
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mt-4">My Saved Outfits</h3>
+
+            @if (ViewBag.SavedUOutfits != null)
+            {
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    @foreach (var outfitUser in ViewBag.SavedUOutfits)
+                    {
+                        var outfitId = outfitUser.OutfitId;
+                        var outfit = allOutfits?.FirstOrDefault(o => o.Id == outfitId);
+
+                        if (outfit != null)
+                        {
+                            <div style="text-align: center;">
+                                <img src="@outfit.Image" alt="@outfit.Name" width="200" style="border-radius: 12px;" />
+                                <p>@outfit.Name</p>
+                                <p><small>@outfit.Date_added.ToShortDateString()</small></p>
+                                <p><small>@outfit.Description</small></p>
+
+                                <form asp-action="UnsaveOutfit" asp-controller="User" asp-route-id="@outfit.Id" method="post" class="mt-2" onsubmit="return confirm('Are you sure you want to unsave this outfit?');">
+                                    <button type="submit" class="btn btn-danger">Delete from My List</button>
+                                </form>
+                            </div>
+                        }
+                    }
+                </div>
+
+            }
+            else
+            {
+                <p>Nu ai salvat niciun outfit încă.</p>
+            }
+        </div>
+    </div>
+}
