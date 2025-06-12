@@ -2,6 +2,11 @@ html {
   font-size: 14px;
 }
 
+@font-face {
+    font-family: 'font_title';
+    src: url('/font/True_Stories.ttf') format('truetype');
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;

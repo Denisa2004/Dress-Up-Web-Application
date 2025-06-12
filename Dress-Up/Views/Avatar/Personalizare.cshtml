@@ -3,6 +3,21 @@
     var avatarId = ViewBag.AvatarId;
 }
 
+@if (TempData["Achievement"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Achievement"]
+    </div>
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["message"]
+    </div>
+}
+
+
 <h2>Personalizează-ți avatarul</h2>
 
 <body>

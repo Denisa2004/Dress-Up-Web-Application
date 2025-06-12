@@ -1,0 +1,113 @@
+﻿/* Font custom */
+@font-face {
+    font-family: 'font_title';
+    src: url('/font/True_Stories.ttf') format('truetype');
+}
+
+/* Sclipici delicat pe fundal */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url('/Images/sclipici.jpg') repeat;
+    opacity: 0.08;
+    pointer-events: none;
+    animation: shimmerBG 20s linear infinite;
+    z-index: -1;
+}
+
+/* Text principal */
+h2.avatar-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 3.5rem;
+    color: #ff85a2;
+    text-align: center;
+    text-shadow: 0 0 5px #ffb6c1, 0 0 15px #ffc0cb;
+    margin: 20px 0;
+}
+
+.btn-new {
+    background: linear-gradient(135deg, #ff85a2, #ffc0cb);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-family: 'Quicksand', sans-serif;
+    border-radius: 25px;
+    box-shadow: 0 0 10px #ffb6c1aa;
+    transition: all 0.3s ease;
+}
+
+.btn-new:hover {
+    background: linear-gradient(135deg, #ffc0cb, #ffaad4);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ffb6c1cc;
+    cursor: pointer;
+}
+
+
+/* Sparkle flash subtil */
+.flash-spot {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,182,193,0.6) 0%, transparent 70%);
+    box-shadow: 0 0 12px rgba(255,182,193,0.3);
+    pointer-events: none;
+    z-index: 2000;
+    animation: sparkleFlash 1s ease-out forwards;
+}
+
+@keyframes sparkleFlash {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* Animație fundal shimmer */
+@keyframes shimmerBG {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 1000px 1000px;
+    }
+}
+
+/* Iconițe hover fine */
+.heart-floating img {
+    filter: drop-shadow(0 0 4px #ff69b4);
+    opacity: 0.9;
+    transform: scale(0.9);
+    animation: floatShoe 1s ease-out forwards;
+}
+
+@keyframes floatShoe {
+    0% {
+        transform: translateY(0) scale(0.9);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-25px) scale(0.9);
+        opacity: 0;
+    }
+}

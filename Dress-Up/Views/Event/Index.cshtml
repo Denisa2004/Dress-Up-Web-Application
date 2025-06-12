@@ -2,6 +2,18 @@
 
 @{
     ViewBag.Title = "Evenimente";
+
+
+    // textul introdus în search-bar (din querystring)
+    var searchTerm = (string)ViewContext.HttpContext.Request.Query["searchTerm"];
+
+    // filtrăm lista după nume dacă există termen de căutare
+    var evenimenteFiltrate = string.IsNullOrWhiteSpace(searchTerm)
+        ? Model
+        : Model.Where(e =>
+              e.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+              .ToList();
+
     var evenimente = Model;
     var evenimenteActive = evenimente.Where(e => e.IsActive).ToList();
     var evenimenteInactive = evenimente.Where(e => !e.IsActive).ToList(); 
@@ -11,7 +23,22 @@
     <form asp-action="New" asp-controller="Event" method="post" class="mt-2">
         <button type="submit" class="btn btn-success">Adauga un concurs</button>
     </form>
+
 }
+
+<!-- Search bar -->
+<form asp-controller="Event" asp-action="Index" method="get" class="search-bar">
+    <input name="searchTerm"
+           value="@searchTerm"
+           placeholder="Caută eveniment după nume…" />
+
+    <button type="submit" class="btn-find">🔍 Caută</button>
+
+    @if (!string.IsNullOrWhiteSpace(searchTerm))
+    {
+        <a asp-controller="Event" asp-action="Index" class="btn-reset">✖ Resetează</a>
+    }
+</form>
 <!-- Evenimente Active -->
 @if (evenimenteActive == null || !evenimenteActive.Any())
 {
@@ -77,6 +104,73 @@ else
     </div>
 }
 
+<style>
+    /* --- SEARCH BAR --- */
+    .search-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 32px;
+        justify-content: center;
+    }
+
+        .search-bar input {
+            flex: 1 1 280px;
+            max-width: 420px;
+            padding: 10px 14px;
+            border: 2px solid #ced4da;
+            border-radius: 50px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color .2s,box-shadow .2s;
+        }
+
+            .search-bar input:focus {
+                border-color: #f14f86;
+                box-shadow: 0 0 0 3px rgba(241,79,134,.15);
+            }
+
+    .btn-find, .btn-reset {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .2s,transform .15s;
+        text-decoration: none; /* și pentru <a> */
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.95rem;
+    }
+
+    .btn-find {
+        color: #fff;
+        background: #f14f86; /* roz */
+        box-shadow: 0 2px 4px rgba(241,79,134,.3);
+    }
+
+        .btn-find:hover {
+            background: #d64577;
+        }
+
+    .btn-reset {
+        color: #fff;
+        background: #6c757d; /* gri-închis */
+        box-shadow: 0 2px 4px rgba(108,117,125,.3);
+    }
+
+        .btn-reset:hover {
+            background: #5a6268;
+        }
+
+        .btn-find:active,
+        .btn-reset:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+</style>
 
 @section Scripts {
     <script>

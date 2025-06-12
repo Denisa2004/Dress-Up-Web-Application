@@ -9,6 +9,7 @@ namespace Dress_Up.Models
         public ICollection<Outfit>? Outfits { get; set; }
         public ICollection<UserEvent>? UserEvents { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
+        public ICollection<UserAchievement>? UserAchievements { get; set; }
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
@@ -16,5 +17,6 @@ namespace Dress_Up.Models
         public string? About { get; set; }
 
         public string? ProfilePictureUrl { get; set; }
+        public ICollection<OutfitUser>? SavedOutfits { get; set; } // pentru outfit-urile salvate
     }
 }
