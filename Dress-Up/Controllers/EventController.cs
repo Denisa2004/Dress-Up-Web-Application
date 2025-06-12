@@ -19,13 +19,19 @@ public class EventController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string searchTerm)
     {
-        var events = await db.Events
+        var query = db.Events
             .Include(e => e.UserEvents)
                 .ThenInclude(ue => ue.Outfit)
-            .ToListAsync();
+            .AsQueryable();
 
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            query = query.Where(e => e.Name.Contains(searchTerm));
+        }
+
+        var events = await query.ToListAsync();
         return View(events);
     }
 

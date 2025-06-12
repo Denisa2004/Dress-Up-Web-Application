@@ -2,6 +2,11 @@
 @using Dress_Up.Models
 @inject Microsoft.AspNetCore.Identity.UserManager<User> UserManager
 
+@{
+    var searchTerm = (string)ViewBag.SearchTerm;
+    var filter = (string)Context.Request.Query["filter"]; // menținem filtrul curent
+}
+
 @if (User.Identity.IsAuthenticated)
     @Html.Partial("_MenuP")
 else
@@ -9,6 +14,41 @@ else
 
 
 <h2 class="title">News‑Feed Outfits</h2>
+
+<!-- search-bar -->
+<form asp-controller="Home" asp-action="HomeGuest" method="get" class="search-bar">
+    <input name="searchTerm"
+           value="@searchTerm"
+           placeholder="Caută după nume outfit sau autor…" />
+
+    @* păstrează filtrul curent în querystring *@
+    @if (!string.IsNullOrWhiteSpace(filter))
+    {
+        <input type="hidden" name="filter" value="@filter" />
+    }
+
+    <button type="submit" class="btn-find">🔍 Caută</button>
+
+    @if (!string.IsNullOrWhiteSpace(searchTerm))
+    {
+        <a asp-action="HomeGuest"
+           asp-controller="Home"
+           asp-route-filter="@filter"
+           class="btn-reset">✖ Resetează</a>
+    }
+</form>
+
+<!-- dropdown „Filtrează” -->
+
+<div style="text-align:center; margin-bottom: 20px;">
+    <div class="dropdown">
+        <button class="filter-button">Filtrează ⬇</button>
+        <div class="dropdown-content">
+            <a href="/Home/HomeGuest?filter=recent">Recente</a>
+            <a href="/Home/HomeGuest?filter=popular">Populare</a>
+        </div>
+    </div>
+</div>
 
 <div class="grid">
     @foreach (var outfit in Model)
@@ -139,6 +179,166 @@ else
 }
 
 <style>
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .filter-button {
+        padding: 8px 16px;
+        border: none;
+        background-color: #f7b1c1;
+        color: white;
+        font-weight: bold;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+        .filter-button:hover {
+            background-color: #f14f86;
+        }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 160px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        z-index: 1;
+    }
+
+        .dropdown-content a {
+            color: #f14f86;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-weight: 500;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #fce4ec;
+            }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* ---- rest of existing CSS ---- */
+    /* ---- grid ---- */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+        gap: 24px;
+        padding: 0 24px 48px;
+        max-width: 1600px;
+        margin: auto;
+    }
+
+    /* ---- card ---- */
+    .card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 10px rgba(0,0,0,.08);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform .15s,box-shadow .15s;
+    }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(0,0,0,.12);
+        }
+
+    .card-img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        background: #fff;
+    }
+
+    .card-body {
+        padding: 14px 16px 8px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .card-body h4 {
+            margin: 0;
+            font-size: 1.05rem;
+            color: #f14f86;
+        }
+
+    /* ---- search-bar ---- */
+    .search-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+        justify-content: center
+    }
+
+        .search-bar input[name='searchTerm'] {
+            flex: 1 1 280px;
+            max-width: 420px;
+            padding: 10px 14px;
+            border: 2px solid #ced4da;
+            border-radius: 50px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color .2s,box-shadow .2s
+        }
+
+            .search-bar input[name='searchTerm']:focus {
+                border-color: #f14f86;
+                box-shadow: 0 0 0 3px rgba(241,79,134,.15)
+            }
+
+    .btn-find, .btn-reset {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: .95rem;
+        text-decoration: none
+    }
+
+    .btn-find {
+        background: #f14f86;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(241,79,134,.3)
+    }
+
+        .btn-find:hover {
+            background: #d64577
+        }
+
+    .btn-reset {
+        background: #6c757d;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(108,117,125,.3)
+    }
+
+        .btn-reset:hover {
+            background: #5a6268
+        }
+
+        .btn-find:active, .btn-reset:active {
+            transform: translateY(1px);
+            box-shadow: none
+        }
     /* ---- layout general ---- */
     body {
         margin: 80px 0 0;

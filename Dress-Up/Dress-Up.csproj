@@ -37,6 +37,7 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="Microsoft\AspNetCore\Identity\UI\" />
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\avatars\" />
     <Folder Include="wwwroot\images\accessories\" />
   </ItemGroup>

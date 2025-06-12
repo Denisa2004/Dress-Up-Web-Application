@@ -21,17 +21,28 @@ namespace Dress_Up.Controllers
         }
 
 
-        public IActionResult HomeGuest()
+        public IActionResult HomeGuest(string filter, string searchTerm)
         {
-            var outfits = _context.Outfits
-                                  .Include(o => o.User)
-                                  .Include(o => o.Comments)
-                                  .Include(o => o.Votes)
-                                  .Where(o => o.IsPublic)
-                                  .OrderByDescending(o => o.Date_added)
-                                  .ToList();
+            var query = _context.Outfits
+                .Include(o => o.User)
+                .Include(o => o.Comments)
+                .Include(o => o.Votes)
+                .Where(o => o.IsPublic);
 
-            return View(outfits);
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var pattern = $"%{searchTerm}%";
+                query = query.Where(o =>
+                    EF.Functions.Like(o.Name, pattern) ||
+                    (o.User != null && EF.Functions.Like(o.User.UserName, pattern)));
+            }
+
+            query = filter == "popular"
+                ? query.OrderByDescending(o => o.Votes.Count(v => v.EventId == null))
+                : query.OrderByDescending(o => o.Date_added);
+
+            ViewBag.SearchTerm = searchTerm;
+            return View(query.ToList());
         }
 
         public IActionResult Index() => View();
