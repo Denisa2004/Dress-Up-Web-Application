@@ -17,5 +17,6 @@ namespace Dress_Up.Models
         public string? About { get; set; }
 
         public string? ProfilePictureUrl { get; set; }
+        public ICollection<OutfitUser>? SavedOutfits { get; set; } // pentru outfit-urile salvate
     }
 }

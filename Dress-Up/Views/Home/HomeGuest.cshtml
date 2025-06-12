@@ -41,6 +41,15 @@ else
                         ❤ Like (<span>@likeCount</span>)
                     </button>
                 </form>
+                <!--save in profile other users outfits-->
+                <form asp-controller="User" asp-action="SaveOutfit"
+                      asp-route-id="@outfit.Id"
+                      method="post" class="actions" style="display:inline-block;">
+                    @Html.AntiForgeryToken()
+                    <button class="btn-save" type="submit" title="Save outfit" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#f7b1c1;">
+                        Save for Inspiration
+                    </button>
+                </form>
             }
             else
             {
