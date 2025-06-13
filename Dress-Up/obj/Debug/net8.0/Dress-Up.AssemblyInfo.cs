@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Dress-Up")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6482520b828e4a0a56a5e180030c5cc61beb0540")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d06a80c52a1e5e31f95cf5b860483092285dc0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Dress-Up")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Dress-Up")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

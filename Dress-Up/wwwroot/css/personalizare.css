@@ -1,0 +1,247 @@
+﻿.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+h2 {
+    font-family: 'Pacifico', sans-serif; /* Fontul mai frumos */
+    font-size: 3rem; /* Dimensiune mai mare */
+    color: #FF1493; /* Culoare roz intens */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* O umbră subtilă pentru un efect mai interesant */
+    letter-spacing: 2px; /* Între literă pentru un aspect mai aerisit */
+    text-align: center; /* Aliniază titlul la centru */
+    padding: 20px;
+    margin-top: 0;
+    top: -50px;
+}
+
+
+.avatar-zone {
+    flex: 1;
+    text-align: center;
+    margin-left: -50px;
+}
+
+#avatarCanvas {
+    width: 400px;
+    height: 650px;
+    border: 1px solid gray;
+}
+
+.hanger {
+    width: 80px;
+    height: 100px;
+    opacity: 0.8; /* Mai puțin transparent */
+    background: url('/images/umeras.png') no-repeat center center;
+    background-size: contain;
+    position: absolute;
+    animation: float 12s infinite linear;
+}
+
+/* Poți adăuga o animație mai vizibilă pentru mișcare */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-50px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Butoane frumoase stil roz */
+.avatar-zone button {
+    background: linear-gradient(135deg, #ff85a2, #ffc0cb);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    font-weight: bold;
+    font-family: 'Quicksand', sans-serif;
+    border-radius: 30px;
+    margin: 5px;
+    box-shadow: 0 0 12px #ffc0cb80;
+    transition: all 0.3s ease;
+}
+
+    .avatar-zone button:hover {
+        background: linear-gradient(135deg, #ffc0cb, #ffaad4);
+        transform: scale(1.05);
+        box-shadow: 0 0 16px #ffb6c1;
+        cursor: pointer;
+    }
+
+
+/*#assistantResponse {
+        margin-top: 10px;
+        min-height: 50px;
+        max-height: 200px; 
+        overflow-y: auto;
+        background-color: #fff;
+        border: 1px solid #000;
+        padding: 8px;
+        border-radius: 5px;
+    }*/
+
+#assistantResponse {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fafafa;
+}
+
+    #assistantResponse::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #assistantResponse::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #assistantResponse::-webkit-scrollbar-thumb {
+        background-color: #ff69b4;
+        border-radius: 3px;
+        border: 1px solid transparent;
+    }
+
+        #assistantResponse::-webkit-scrollbar-thumb:hover {
+            background: #ff4081;
+        }
+
+#assistantInput::-webkit-scrollbar {
+    width: 6px;
+}
+
+#assistantInput::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#assistantInput::-webkit-scrollbar-thumb {
+    background-color: #ff69b4;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+
+    #assistantInput::-webkit-scrollbar-thumb:hover {
+        background: #ff4081;
+    }
+
+.wardrobe-zone {
+    background-image: url('/images/closet.png');
+    background-size: cover;
+    background-position: center;
+    width: 1250px;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+    position: relative;
+}
+
+.category-icons {
+    position: absolute;
+    top: 30px;
+    left: 270px;
+    right: 100px;
+    display: flex;
+    justify-content: space-around;
+    z-index: 2;
+}
+
+    .category-icons img {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .category-icons img:hover {
+            transform: scale(1.2);
+        }
+
+.clothes-display {
+    position: absolute;
+    top: 100px;
+    left: 200px;
+    bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+}
+
+    .clothes-display img {
+        width: 150px;
+        height: 300px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .clothes-display img:hover {
+            transform: scale(1.1);
+        }
+
+.loader {
+    display: inline-block;
+    text-align: center;
+    width: 40px;
+}
+
+    .loader span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin: 0 2px;
+        background: #ff4081;
+        border-radius: 50%;
+        animation: loaderBounce 1.4s infinite ease-in-out both;
+    }
+
+        .loader span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loader span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+keyframes loaderBounce {
+    0%, 80%, 100%
+
+{
+    transform: scale(0);
+}
+
+40% {
+    transform: scale(1);
+}
+
+}
+
+.chat-message {
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #f7b1c1;
+    align-self: flex-end;
+}
+
+.assistant-message {
+    background-color: #f3e7fd;
+    align-self: flex-start;
+}
