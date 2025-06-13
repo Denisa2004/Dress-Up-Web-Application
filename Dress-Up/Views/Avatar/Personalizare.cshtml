@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Personalizare Avatar";
     var avatarId = ViewBag.AvatarId;
+    <link rel="stylesheet" href="~/css/personalizare.css" />
+
 }
 
 @if (TempData["Achievement"] != null)
@@ -86,196 +88,7 @@
 
 </body>
 
-<style>
 
-    .container {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 2rem;
-        gap: 2rem;
-    }
-
-    .avatar-zone {
-        flex: 1;
-        text-align: center;
-        margin-left: -50px;
-    }
-
-    #avatarCanvas {
-        width: 400px;
-        height: 650px;
-        border: 1px solid gray;
-    }
-
-    /*#assistantResponse {
-        margin-top: 10px;
-        min-height: 50px;
-        max-height: 200px; 
-        overflow-y: auto;
-        background-color: #fff;
-        border: 1px solid #000;
-        padding: 8px;
-        border-radius: 5px;
-    }*/
-
-    #assistantResponse {
-    display: flex;
-    flex-direction: column;
-    height: 300px;        
-    overflow-y: auto;    
-    border: 1px solid #ccc; 
-    padding: 10px;         
-    background-color: #fafafa; 
-}
-
-    #assistantResponse::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    #assistantResponse::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    #assistantResponse::-webkit-scrollbar-thumb {
-        background-color: #ff69b4;
-        border-radius: 3px;
-        border: 1px solid transparent;
-    }
-
-    #assistantResponse::-webkit-scrollbar-thumb:hover {
-        background: #ff4081;
-    }
-
-     #assistantInput::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    #assistantInput::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    #assistantInput::-webkit-scrollbar-thumb {
-        background-color: #ff69b4;
-        border-radius: 3px;
-        border: 1px solid transparent;
-    }
-
-    #assistantInput::-webkit-scrollbar-thumb:hover {
-        background: #ff4081;
-    }
-
-    .wardrobe-zone {
-        background-image: url('/images/closet.png');
-        background-size: cover;
-        background-position: center;
-        width: 1250px;
-        height: 650px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        padding-top: 20px;
-        position: relative;
-    }
-
-    .category-icons {
-        position: absolute;
-        top: 30px;
-        left: 270px;
-        right: 100px;
-        display: flex;
-        justify-content: space-around;
-        z-index: 2;
-    }
-
-        .category-icons img {
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-            .category-icons img:hover {
-                transform: scale(1.2);
-            }
-
-    .clothes-display {
-        position: absolute;
-        top: 100px;
-        left: 200px;
-        bottom: 30px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 10px;
-    }
-
-        .clothes-display img {
-            width: 150px;
-            height: 300px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-            .clothes-display img:hover {
-                transform: scale(1.1);
-            }
-
-    .loader {
-        display: inline-block;
-        text-align: center;
-        width: 40px;
-    }
-
-    .loader span {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        margin: 0 2px;
-        background: #ff4081;
-        border-radius: 50%;
-        animation: loaderBounce 1.4s infinite ease-in-out both;
-    }
-
-    .loader span:nth-child(1) {
-        animation-delay: -0.32s;
-    }
-
-    .loader span:nth-child(2) {
-        animation-delay: -0.16s;
-    }
-
-    keyframes loaderBounce {
-        0%, 80%, 100% 
-        {
-        transform: scale(0);
-        }
-    40% {
-        transform: scale(1);
-        }
-    }
-
-    .chat-message {
-        padding: 6px 10px;
-        margin-bottom: 6px;
-        border-radius: 10px;
-        max-width: 90%;
-        word-wrap: break-word;
-    }
-
-    .user-message {
-        background-color: #f7b1c1;
-        align-self: flex-end;
-    }
-
-    .assistant-message {
-        background-color: #f3e7fd;
-        align-self: flex-start;
-    }
-
-
-
-</style>
 
 <div class="container">
     <!-- Avatar -->
@@ -571,6 +384,43 @@
                 document.getElementById("sendAssistantMessage").click();
             }
         });
+
+        // Adaugă umerașele plutitoare corect
+        function createFloatingHangers(count = 10) {
+            for (let i = 0; i < count; i++) {
+                const hanger = document.createElement('div');
+                hanger.classList.add('hanger');
+
+                const startX = Math.random() * window.innerWidth;
+                const delay = Math.random() * 20;
+
+                hanger.style.left = `${startX}px`;
+                hanger.style.animationDelay = `${delay}s`;
+                hanger.style.animationDuration = `${10 + Math.random() * 10}s`;
+
+                document.body.appendChild(hanger);
+            }
+        }
+
+        // Asigură-te că funcția este apelată la încărcarea paginii
+        window.addEventListener("DOMContentLoaded", () => {
+            createFloatingHangers(15);
+        });
+
+
+        function createHanger() {
+            const hanger = document.createElement('div');
+            hanger.classList.add('hanger');
+            hanger.style.left = Math.random() * window.innerWidth + 'px';
+            hanger.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(hanger);
+
+            // Elimină după ce a ieșit de pe ecran
+            setTimeout(() => hanger.remove(), 10000);
+        }
+
+        // Creează periodic câte un umeraș plutitor
+        setInterval(createHanger, 1000);
 
 
     </script>

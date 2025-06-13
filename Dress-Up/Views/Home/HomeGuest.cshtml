@@ -12,6 +12,8 @@
 else
     @Html.Partial("_MenuG")
 
+<link rel="stylesheet" href="~/css/avatar.css" />
+<script src="~/js/avatar.js"></script>
 
 <h2 class="title">News‑Feed Outfits</h2>
 
@@ -341,17 +343,21 @@ else
         }
     /* ---- layout general ---- */
     body {
-        margin: 80px 0 0;
+        margin: 0;
         font-family: Arial,Helvetica,sans-serif;
         background: #fafafa
     }
 
     .title {
         text-align: center;
+        font-family:'Pacifico';
         margin: 0 0 24px;
-        color: #333;
-        font-size: 1.9rem;
-        font-weight: 700
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #f14f86, #f7b1c1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 2px rgba(241, 79, 134, 0.2);
     }
 
     /* ---- grid ---- */
