@@ -32,7 +32,7 @@ The platform is built around three main roles, each with specific functionalitie
 * **Account:** Register for a new account or log in.
 
 ### 🎀 For Users (Authenticated)
-* **Outfit Creator:** Design outfits by selecting an avatar and choosing from 6 categories of clothing items.
+* **Outfit Creator:** Design outfits by selecting an avatar and choosing from 6 categories of clothing items. Features an integrated AI chatbot assistant 🤖 to provide styling advice and creative feedback.
 * **Social Feed:** Publish creations to a main "News Feed" where other users can **Like**, **Comment**, and **Save** them.
 * **Contests (Events):** Enter themed contests with saved outfits to compete against other users.
 * **Personal Profile:** Manage account details and view a personal gallery of created and saved outfits for inspiration.
@@ -46,9 +46,7 @@ The platform is built around three main roles, each with specific functionalitie
 
 ## 🗺️ Application User Flow
 
-Our core navigation logic is designed to be intuitive, guiding the user from a central hub to the main application modules.
-
-*(This diagram shows the path from start-up, through login/register, and into the main features like the News Feed, Outfit Creator, Events, and Profile.)*
+Our core navigation logic is designed to be intuitive, guiding the user from start-up, through login/register, and into the main features like the News Feed, Outfit Creator, Events, and Profile.
 
 ![User Flow Diagram](workflow.jpeg)
 
